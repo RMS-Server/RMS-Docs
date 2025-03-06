@@ -18,7 +18,7 @@
 ### 2.1 相对路径跳转
 
 当前目录下的文件：
-- [查看Markdown示例](./markdown-example.md)
+- [查看Markdown示例](/缇里西庇俄丝/缇宝/markdown-example.md#103-链接到文档特定章节)
 
 上级目录的文件：
 - [查看项目配置](../index.html)
