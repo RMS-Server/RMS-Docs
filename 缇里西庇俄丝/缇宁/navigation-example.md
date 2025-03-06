@@ -18,7 +18,7 @@
 ### 2.1 相对路径跳转
 
 当前目录下的文件：
-- [查看Markdown示例](./markdown-example.md)
+- [查看Markdown示例](../%E7%BC%87%E5%AE%9D/markdown-example.md)
 
 上级目录的文件：
 - [查看项目配置](../index.html)
