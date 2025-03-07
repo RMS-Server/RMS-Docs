@@ -1,0 +1,14 @@
+name: Send GET Request on Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  send-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send GET Request
+        run: |
+          curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios'
