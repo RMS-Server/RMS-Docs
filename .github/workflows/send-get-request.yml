@@ -10,7 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send GET Request
-        retries: 1
-        continue-on-error: true
         run: |
-          timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' || exit 1
+          retries=1
+          while [ $retries -ge 0 ]; do
+            timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' && exit 0
+            retries=$((retries-1))
+            if [ $retries -ge 0 ]; then
+              sleep 5
+            fi
+          done
+          exit 1
