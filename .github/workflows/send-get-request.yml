@@ -10,5 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send GET Request
+        retries: 1
+        continue-on-error: true
         run: |
-          curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios'
+          timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' || exit 1
