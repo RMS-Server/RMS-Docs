@@ -6,10 +6,11 @@
 | ---------- | ---------------- | -------------------------------------------- |
 | Chonghua   | 重华             | Github: Chonghua05                           |
 | Logic_VY   | VY               | Github: Vincent-tnecniV<br>kook: Logistic_VY |
-| CoralcatX  | CX 珊瑚猫 傻花猫 |                                              |
+| CoralcatX  | CX 珊瑚猫 傻花猫  |                                              |
 | tytyi      | TY 汤圆汤圆i     |                                              |
 | Petris5256 | 派蒙             |                                              |
+| XRain666   |                  |                                              |
 | shuang_qwq | 霜               |                                              |
 | Yu136521   | 瑀 (?)           |                                              |
-| AWHSDWJ    | 爱玩红石的玩家   |                                              |
+| AWHSDWJ    | 爱玩红石的玩家    |                                              |
 | tdr_mo     | tdr 太丢人       |                                              |
