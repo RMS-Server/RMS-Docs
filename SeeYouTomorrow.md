@@ -63,6 +63,7 @@ _嗯，明天见！_
 
 ![image](https://docs.rms.net.cn/tribioswuwuwu.webp)
 <!--start-->>
+看昨天的我们 走远了
 在命运广场中央 等待
 那模糊的 肩膀
 越奔跑 越渺小
