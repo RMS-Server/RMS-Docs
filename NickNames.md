@@ -4,12 +4,12 @@
 如果有误请联系VY、重华进行更改
 | ID         | 昵称             | 其它账号ID                                   |
 | ---------- | ---------------- | -------------------------------------------- |
-| Chonghua   | 重华             | Github: Chonghua05                           |
+| Chonghua   | 重华             | Github: [Chonghua05](https://github.com/Chonghua05)                           |
 | Logic_VY   | VY               | Github: Vincent-tnecniV<br>kook: Logistic_VY |
 | CoralcatX  | CX 珊瑚猫 傻花猫  |                                              |
 | tytyi      | TY 汤圆汤圆i     |                                              |
 | Petris5256 | 派蒙             |                                              |
-| XRain666   |                  |                                              |
+| XRain666   |                  |Github:[XRain66](https://github.com/XRain66)                                              |
 | shuang_qwq | 霜               |                                              |
 | Yu136521   | 瑀 (?)           |                                              |
 | AWHSDWJ    | 爱玩红石的玩家    |                                              |
