@@ -3,9 +3,9 @@
 ## 20250403更新
 
 - 迁移了公告中的帮助部分
-- 将通用文档中的`新人须知`迁移至[新人须知.md](/新人须知.md)
-- 将通用文档中的`服务器规定（暂行）`迁移至[服务器规定.md](/服务器规定.md)
-- 将通用文档中的`服务器信息`迁移至[ServerInfo.md](/ServerInfo.md)
+- 将通用文档中的`新人须知`迁移至[新人须知.md](https://docs.rms.net.cn/?path=/新人须知.md)
+- 将通用文档中的`服务器规定（暂行）`迁移至[服务器规定.md](https://docs.rms.net.cn/?path=/服务器规定.md)
+- 将通用文档中的`服务器信息`迁移至[ServerInfo.md](https://docs.rms.net.cn/?path=/ServerInfo.md)
 
 # Website
 
