@@ -13,7 +13,11 @@ jobs:
         run: |
           retries=1
           while [ $retries -ge 0 ]; do
-            timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' && exit 0
+            if timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' && \
+               timeout 10s curl -X GET 'http://api.chuckfang.com/XRPAD/RMS Docs Update/The docs has update certainly' && \
+               timeout 10s curl -X GET 'http://api.chuckfang.com/XRPHONE/RMS Docs Update/The docs has update certainly'; then
+              exit 0
+            fi
             retries=$((retries-1))
             if [ $retries -ge 0 ]; then
               sleep 5
