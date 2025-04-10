@@ -7,7 +7,7 @@
 由于批改时间比较紧张，请大家有可能的话尽早完成提交。（周四傍晚之前是一个很理想的时间）
 
 作业存档下载：
- - [第一期 4/5](https://docs.rms.net.cn/context/RMS%20Tutorial/HW/Tech Tutorial HW for 0_2-0_3.zip) 截止暂定北京时间 4/11 晚 23:59 \
+ - [第一期 4/5](https://docs.rms.net.cn/context/RMS%20Tutorial/HW/Tech%20Tutorial%20HW%20for%200_2-0_3.zip) 截止暂定北京时间 4/11 晚 23:59 \
 ***注意4/8日晚对可用材料有一次改动！！！***
 
 ## 评分？
