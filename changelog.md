@@ -6,7 +6,7 @@
 - `4/9` 补充了服内教学作业提交细节：
   - 我应该会在24小时内，或者截止时间后4小时内回复，否则的话请私信我确认
   - 由于批改时间比较紧张，请大家有可能的话尽早完成提交。（周四傍晚之前是一个很理想的时间）
-- 对服内教学增加了往期资料表格；上传了4/5讲的内容的讲义，请至[服内教学](RMS%20Tutorial/0.%20General.md "服内教学")查看
+- 对服内教学增加了往期资料表格；上传了4/5讲的内容的讲义，请至[服内教学](https://docs.rms.net.cn/?path=RMS%20Tutorial/0.%20General.md "服内教学")查看
 
 ## 2025/4/8更新
 - 重构文档结构
@@ -14,9 +14,9 @@
 ## 2025/4/3更新
 
 - 迁移了公告中的帮助部分
-- 将通用文档中的`新人须知`迁移至[NewPlayers.md](/NewPlayers.md "新人须知")
-- 将通用文档中的`服务器规定（暂行）`迁移至[Rules.md](/1.%20Rules.md "服务器规定（暂行）")
-- 将通用文档中的`服务器信息`迁移至[ServerInfo.md](/3.%20ServerInfo.md "服务器信息")
+- 将通用文档中的`新人须知`迁移至[NewPlayers.md](https://docs.rms.net.cn/?path=/NewPlayers.md "新人须知")
+- 将通用文档中的`服务器规定（暂行）`迁移至[Rules.md](https://docs.rms.net.cn/?path=/1.%20Rules.md "服务器规定（暂行）")
+- 将通用文档中的`服务器信息`迁移至[ServerInfo.md](https://docs.rms.net.cn/?path=/3.%20ServerInfo.md "服务器信息")
 
 # Website
 
