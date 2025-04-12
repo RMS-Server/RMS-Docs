@@ -1,0 +1,11 @@
+# 基础逻辑
+暂时懒得写了，以下概念不了解的自己去搜一下
+> 注意是概念，不是MC中实现
+逻辑门：OR AND NOT NAND NOR XOR XAND，真值表
+
+MC指令中以及很多逻辑表达式中!(A) = NOT A\
+优先级上，!高于一切，一般认为AND优先级高于OR，但是一般都会用括号写清楚
+
+De Morgan's Law: 
+> !A AND !B = !(A OR B)
+> !A OR !B = !(A AND B)
