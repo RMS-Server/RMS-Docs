@@ -26,9 +26,9 @@
 11. 此时会弹出窗口登录，将刚刚注册的Little Skin账号填写(邮箱及密码)
     
     ![ExLg-04](https://download.hurrybili1016hjh.cc/RMS/ExLg-04.webp)
-    
+
 12. 启动游戏，等待白名单通过
-13. 3. 入服 IP：`game.rms.net.cn`
+13. 入服 IP：`game.rms.net.cn`
 ## 暂时放在这里
 ~~若使用高版本+via，需将via手动设置为1.17.1~~（目前该问题已修复）
 
