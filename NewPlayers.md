@@ -1,8 +1,26 @@
 # 新人须知
-## 入服流程
+## 正版账号入服流程
 1. 将群昵称改为游戏ID（至少要包含） 
 2. 打开浏览器，访问https://wl.rms.net.cn，输入你的用户名，提交白名申请，等待通过
-3. 入服 IP：`game.rms.net.cn` 
+3. 入服 IP：`game.rms.net.cn`
+## 外置登录(非正版)入服流程(LittleSkin)
+1. 在Little Skin注册一个账号(https://littleskin.cn/)
+2. 登录刚刚注册的账号
+3. 在左边的边栏我们可以看到角色管理，点它
+    ![ExLg-01](https://download.hurrybili1016hjh.cc/RMS/ExLg-01.webp)
+4. 点击添加新角色，输入角色名以添加新角色
+5. 将群昵称改为刚刚输入的角色名（至少要包含）
+6. 打开浏览器，访问https://wl.rms.net.cn，输入你的用户名，提交白名申请，等待通过
+7. 启动你的第三方启动器(PCL2为例)，并选择好需要的游戏版本，点击离线登录
+8. 返回LittleSkin界面，点击边栏的仪表盘，拉到页面最下方，找到在游戏中加载材质
+    ![ExLg-02](https://download.hurrybili1016hjh.cc/RMS/ExLg-02.webp)
+9. 找到外置登录/Yggdrasil大按钮，将它拖拽到启动器界面
+10. 在拖入启动器以后，如果启动器会弹出以下窗口，点击确定即可
+    ![ExLg-03](https://download.hurrybili1016hjh.cc/RMS/ExLg-03.webp)
+11. 此时会弹出窗口登录，将刚刚注册的Little Skin账号填写(邮箱及密码)
+    ![ExLg-04](https://download.hurrybili1016hjh.cc/RMS/ExLg-04.webp)
+12. 启动游戏，等待白名单通过
+13. 3. 入服 IP：`game.rms.net.cn`
 ## 暂时放在这里
 ~~若使用高版本+via，需将via手动设置为1.17.1~~（目前该问题已修复）
 
