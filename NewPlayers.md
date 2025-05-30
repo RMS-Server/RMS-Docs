@@ -5,29 +5,29 @@
 3. 入服 IP：`game.rms.net.cn`
 ## 外置登录(非正版)入服流程(LittleSkin)
 1. 在[Little Skin](https://littleskin.cn/)登录/注册一个账号
-3. 点击角色管理
+2. 点击角色管理
     
     ![ExLg-01](https://docs.rms.net.cn/context/Assets/ExLg-01.webp)
 
-4. 点击添加新角色，输入角色名以添加新角色(此角色名就是在游戏中的名字)
-5. 将群昵称改为刚刚输入的角色名（至少要包含）
-6. [点我申请白名单](https://wl.rms.net.cn)，输入你的角色名，提交白名申请，等待通过
-7. 启动你的第三方启动器(PCL2为例)，并选择好需要的游戏版本，点击离线登录
-8. 返回LittleSkin界面，点击边栏的仪表盘，拉到页面最下方，找到在游戏中加载材质
+3. 点击添加新角色，输入角色名以添加新角色(此角色名就是在游戏中的名字)
+4. 将群昵称改为刚刚输入的角色名（至少要包含）
+5. [点我申请白名单](https://wl.rms.net.cn)，输入你的角色名，提交白名申请，等待通过
+6. 启动你的第三方启动器(PCL2为例)，并选择好需要的游戏版本，点击离线登录
+7. 返回LittleSkin界面，点击边栏的仪表盘，拉到页面最下方，找到在游戏中加载材质
     
     ![ExLg-02](https://docs.rms.net.cn/context/Assets/ExLg-02.webp)
 
-9. 找到外置登录/Yggdrasil大按钮，将它拖拽到启动器界面
-10. 在拖入启动器以后，如果启动器会弹出以下窗口，点击确定即可
+8. 找到外置登录/Yggdrasil大按钮，将它拖拽到启动器界面
+9. 在拖入启动器以后，如果启动器会弹出以下窗口，点击确定即可
     
     ![ExLg-03](https://docs.rms.net.cn/context/Assets/ExLg-03.webp)
 
-11. 此时会弹出窗口登录，将刚刚注册的Little Skin账号填写(邮箱及密码)
+10. 此时会弹出窗口登录，将刚刚注册的Little Skin账号填写(邮箱及密码)
     
     ![ExLg-04](https://docs.rms.net.cn/context/Assets/ExLg-04.webp)
 
-12. 启动游戏，等待白名单通过
-13. 入服 IP：`game.rms.net.cn`
+11. 启动游戏，等待白名单通过
+12. 入服 IP：`game.rms.net.cn`
 ## 暂时放在这里
 ~~若使用高版本+via，需将via手动设置为1.17.1~~（目前该问题已修复）
 
