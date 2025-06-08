@@ -16,3 +16,4 @@
 | tdr_mo         | tdr 太丢人       |                                                     |
 | Watery_plateau | 水原             |                                                     |
 | tang511        | 唐               |                                                     |
+| Hurrybili1016  | Hurry 哈瑞       | Github:[mgHurryo](https://github.com/mgHurryo)      |
