@@ -9,9 +9,9 @@
 | CoralcatX      | CX 珊瑚猫 傻花猫 |                                                     |
 | tytyi          | TY 汤圆汤圆i     |                                                     |
 | Petris5256     | 派蒙             |                                                     |
-| XRain666       |                  | Github:[XRain66](https://github.com/XRain66)        |
+| XRain666       | 叉Rain/叉R       | Github:[XRain66](https://github.com/XRain66)        |
 | shuang_qwq     | 霜               |                                                     |
-| Yu136521       | 瑀 (?)           |                                                     |
+| XiaoYu520__    | 瑀 (?)           |                                                     |
 | AWHSDWJ        | 爱玩红石的玩家   |                                                     |
 | tdr_mo         | tdr 太丢人       |                                                     |
 | Watery_plateau | 水原             |                                                     |
