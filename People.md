@@ -11,7 +11,7 @@
 | `tytyi`         | TY    | 主后勤                               |
 | `CoralcalX`     | CX    | 游离状态？ 建筑服                    |
 | `Hurrybili1016` | Hurry | 文档中工程信息的一部分更新、网页维护 |
-| `Jog_Ming`      | Jim   | 被压榨写模组                         |
+| `Jog_Ming`      | Jim   | 被压榨写模组(IB微死)                 |
 | `Petris`        | 派蒙  | 技术                                 |
 
 > 视情况随时变动，**不固定**
