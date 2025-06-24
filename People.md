@@ -5,7 +5,7 @@
 
 | ID              | 称呼  | 职责                                 |
 | --------------- | ----- | ------------------------------------ |
-| `XRain666`      | XR    | 腐竹、服务器维护                     |
+| `XRain666`      | XR    | 腐竹、服务器维护、网站维护            |
 | `Chonghua`      | 重华  | 绝大多数日常事务 行政？              |
 | `__VY__`        | VY    | 维护文档 技术 写点插件               |
 | `tytyi`         | TY    | 主后勤                               |
@@ -24,7 +24,7 @@
 | ----------------- | ----------------------- | ------------ | --------------------------------------------------- |
 | `XRain666`        | 叉Rain 叉R              |              | GitHub:[XRain66](https://github.com/XRain66)        |
 | `Chonghua`        | 重华                    |              | GitHub: [Chonghua05](https://github.com/Chonghua05) |
-| `__VY__`          | VY                      | Logic_VY     | GitHub: [VY-L](github.com/VY-L)                     |
+| `__VY__`          | VY                      | Logic_VY     | GitHub: [VY-L](https://github.com/VY-L)                     |
 | `tytyi`           | TY (汤圆汤圆i)          |              |                                                     |
 | `CoralcatX`       | CX (珊瑚猫 傻花猫)      |              |                                                     |
 | `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)      |

@@ -21,7 +21,7 @@
 1. 在[Little Skin](https://littleskin.cn/)登录/注册一个账号
 2. 点击角色管理
     
-    ![ExLg-01](https://docs.rms.net.cn/context/Assets/ExLg-01.webp)
+    ![ExLg-01](/Assets/ExLg-01.webp)
 
 3. 点击添加新角色，输入角色名以添加新角色(此角色名就是在游戏中的名字)
 4. 将群昵称改为刚刚输入的角色名（至少要包含）
@@ -29,16 +29,16 @@
 6. 启动你的第三方启动器(PCL2为例)，并选择好需要的游戏版本，点击离线登录
 7. 返回LittleSkin界面，点击边栏的仪表盘，拉到页面最下方，找到在游戏中加载材质
     
-    ![ExLg-02](https://docs.rms.net.cn/context/Assets/ExLg-02.webp)
+    ![ExLg-02](/Assets/ExLg-02.webp)
 
 8. 找到外置登录/Yggdrasil大按钮，将它拖拽到启动器界面
 9. 在拖入启动器以后，如果启动器会弹出以下窗口，点击确定即可
     
-    ![ExLg-03](https://docs.rms.net.cn/context/Assets/ExLg-03.webp)
+    ![ExLg-03](/Assets/ExLg-03.webp)
 
 10. 此时会弹出窗口登录，将刚刚注册的Little Skin账号填写(邮箱及密码)
     
-    ![ExLg-04](https://docs.rms.net.cn/context/Assets/ExLg-04.webp)
+    ![ExLg-04](/Assets/ExLg-04.webp)
 
 11. 启动游戏，等待白名单通过
 12. 入服 IP：`game.rms.net.cn`
