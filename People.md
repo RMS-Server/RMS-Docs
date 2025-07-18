@@ -8,7 +8,7 @@
 | `XRain666`      | XR    | 腐竹、服务器维护、网站维护            |
 | `Chonghua`      | 重华  | 绝大多数日常事务 行政？              |
 | `__VY__`        | VY    | 维护文档 技术 写点插件               |
-| `tytyi`         | TY    | 主后勤                               |
+| `tytyi`         | tytyi_    | 主后勤                               |
 | `CoralcalX`     | CX    | 游离状态？ 建筑服                    |
 | `Hurrybili1016` | Hurry | 文档中工程信息的一部分更新、网页维护 |
 | `Jog_Ming`      | Jim   | 被压榨写模组(IB微死)                 |
@@ -25,7 +25,7 @@
 | `XRain666`        | 叉Rain 叉R              |              | GitHub:[XRain66](https://github.com/XRain66)        |
 | `Chonghua`        | 重华                    |              | GitHub: [Chonghua05](https://github.com/Chonghua05) |
 | `__VY__`          | VY                      | Logic_VY     | GitHub: [VY-L](https://github.com/VY-L)                     |
-| `tytyi`           | TY (汤圆汤圆i)          |              |                                                     |
+| `tytyi`           | tytyi_ (汤圆汤圆i)          |              |                                                     |
 | `CoralcatX`       | CX (珊瑚猫 傻花猫)      |              |                                                     |
 | `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)      |
 | `Jog_Ming`        | Jim Jog Jog_Ming (积木) |              | GitHub:[Jog-Ming](https://github.com/Jog-Ming)       |
