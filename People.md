@@ -32,7 +32,7 @@
 | `Petris5256`      | 派蒙 Petris             |              |                                                     |
 | `shuang_qwq`      | 霜                      |              |                                                     |
 | `XiaoYu520__`     | 小瑀                    |              |                                                     |
-| `AWHSDWJ`         | 爱玩红石的玩家          |              |                                                     |
+| `AWHSDWJ`         | 爱玩红石的玩家           |              |                                                     |
 | `tdr_mo`          | tdr (太丢人)            |              |                                                     |
 | `Watery_plateau`  | 水原                    |              |                                                     |
 | `tang511`         | 唐                      |              |                                                     |
