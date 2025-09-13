@@ -25,10 +25,10 @@
 | `XRain666`        | 叉Rain 叉R              |              | GitHub:[XRain66](https://github.com/XRain66)        |
 | `Chonghua`        | 重华                    |              | GitHub: [Chonghua05](https://github.com/Chonghua05) |
 | `__VY__`          | VY                      | Logic_VY     | GitHub: [VY-L](https://github.com/VY-L)             |
-| `tytyi_`          | TY (汤圆汤圆i)           |              |                                                     |
-| `CoralcatX`       | CX (珊瑚猫 傻花猫)       |              |                                                      |
-| `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)       |
-| `Jog_Ming`        | Jim Jog Jog_Ming (积木) |              | GitHub:[Jog-Ming](https://github.com/Jog-Ming)       |
+| `tytyi_`          | TY (汤圆汤圆i)          |              |                                                     |
+| `CoralcatX`       | CX (珊瑚猫 傻花猫)      |              |                                                     |
+| `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)      |
+| `Jog_Ming`        | Jim Jog Jog_Ming (积木) |              | GitHub:[Jog-Ming](https://github.com/Jog-Ming)      |
 | `Petris5256`      | 派蒙 Petris             |              |                                                     |
 | `shuang_qwq`      | 霜                      |              |                                                     |
 | `XiaoYu520__`     | 小瑀                    |              |                                                     |
@@ -37,3 +37,4 @@
 | `Watery_plateau`  | 水原                    |              |                                                     |
 | `tang511`         | 唐                      |              |                                                     |
 | `DarkChocolate_0` | 黑巧 (slept)            | LoadLibraryA |                                                     |
+| `Noxci`           | 小诺                    |              |                                                     |
