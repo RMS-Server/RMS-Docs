@@ -16,27 +16,78 @@ jobs:
         env:
           SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
         run: |
+          set -uo pipefail
+
           if [ -z "$SYNC_TOKEN" ]; then
             echo "SYNC_TOKEN is not configured"
             exit 1
           fi
 
-          archive_path="$(mktemp -p "${RUNNER_TEMP:-/tmp}" repo.tar.gz.XXXXXX)"
-          if ! tar --exclude='.git' --exclude='.github' -czf "$archive_path" -C . .; then
-            echo "Failed to create repository archive"
-            rm -f "$archive_path"
-            exit 1
+          sync_base="https://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}"
+          temp_dir="$(mktemp -d -p "${RUNNER_TEMP:-/tmp}" sync.XXXXXX)"
+          trap 'rm -rf "$temp_dir"' EXIT
+
+          manifest_path="$temp_dir/manifest.json"
+          python3 scripts/generate_manifest.py "$manifest_path"
+
+          if [ ! -s "$manifest_path" ]; then
+            echo "Manifest is empty"
+            exit 0
           fi
+
+          sync_once() {
+            local response_path="$temp_dir/response.json"
+            local -a update_files=()
+
+            if ! curl --fail -sS -X POST \
+                 -H 'Content-Type: application/json' \
+                 --data-binary "@$manifest_path" \
+                 "${sync_base}&mode=manifest" \
+                 -o "$response_path"; then
+              echo "Manifest submission failed"
+              return 1
+            fi
+
+            if ! mapfile -t update_files < <(python3 scripts/parse_manifest_response.py "$response_path"); then
+              echo "Failed to parse manifest response"
+              return 1
+            fi
+
+            if [ ${#update_files[@]} -eq 0 ]; then
+              echo "No files require sync"
+              return 0
+            fi
+
+            for relpath in "${update_files[@]}"; do
+              file="./$relpath"
+              if [ ! -f "$file" ]; then
+                echo "Requested file '$relpath' not found"
+                return 1
+              fi
+              if ! curl --fail -sS -X POST \
+                       --form "path=$relpath" \
+                       --form "file=@$file;type=application/octet-stream" \
+                       "${sync_base}&mode=upload"; then
+                echo "Upload failed for '$relpath'"
+                return 1
+              fi
+            done
+
+            if ! timeout 10s curl -sS -X GET 'http://api.chuckfang.com/XRPAD/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
+              echo "Notification to XRPAD failed"
+              return 1
+            fi
+            if ! timeout 10s curl -sS -X GET 'http://api.chuckfang.com/XRPHONE/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
+              echo "Notification to XRPHONE failed"
+              return 1
+            fi
+
+            return 0
+          }
 
           retries=1
           while [ $retries -ge 0 ]; do
-            if curl --fail -X POST \
-               -H 'Content-Type: application/octet-stream' \
-               --data-binary "@$archive_path" \
-               "https://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
-               timeout 10s curl -X GET 'http://api.chuckfang.com/XRPAD/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly' && \
-               timeout 10s curl -X GET 'http://api.chuckfang.com/XRPHONE/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
-              rm -f "$archive_path"
+            if sync_once; then
               exit 0
             fi
             retries=$((retries-1))
@@ -44,5 +95,5 @@ jobs:
               sleep 5
             fi
           done
-          rm -f "$archive_path"
+
           exit 1
