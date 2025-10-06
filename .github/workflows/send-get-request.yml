@@ -22,7 +22,7 @@ jobs:
           fi
 
           archive_path="$(mktemp -p "${RUNNER_TEMP:-/tmp}" repo.tar.gz.XXXXXX)"
-          if ! tar --exclude='.git' -czf "$archive_path" -C . .; then
+          if ! tar --exclude='.git' --exclude='.github' -czf "$archive_path" -C . .; then
             echo "Failed to create repository archive"
             rm -f "$archive_path"
             exit 1
