@@ -31,11 +31,8 @@
 | `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)      |
 | `Jog_Ming`        | Jim Jog Jog_Ming (积木) |              | GitHub:[Jog-Ming](https://github.com/Jog-Ming)      |
 | `Petris5256`      | 派蒙 Petris             |              |                                                     |
-| `shuang_qwq`      | 霜                      |              |                                                     |
-| `XiaoYu520__`     | 小瑀                    |              |                                                     |
 | `AWHSDWJ`         | 爱玩红石的玩家           |              |                                                     |
 | `tdr_mo`          | tdr (太丢人)            |              |                                                     |
-| `Watery_plateau`  | 水原                    |              |                                                     |
 | `tang511`         | 唐                      |              |                                                     |
 | `DarkChocolate_0` | 黑巧 (slept)            | LoadLibraryA |                                                     |
 | `Noxci`           | 小诺                    |              |                                                     |
