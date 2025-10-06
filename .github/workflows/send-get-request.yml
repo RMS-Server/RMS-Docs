@@ -30,7 +30,7 @@ jobs:
 
           retries=1
           while [ $retries -ge 0 ]; do
-            if timeout 30s curl --fail -X POST \
+            if curl --fail -X POST \
                -H 'Content-Type: application/octet-stream' \
                --data-binary "@$archive_path" \
                "https://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
