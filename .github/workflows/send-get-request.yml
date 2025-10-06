@@ -33,7 +33,7 @@ jobs:
             if timeout 30s curl --fail -X POST \
                -H 'Content-Type: application/octet-stream' \
                --data-binary "@$archive_path" \
-               "http://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
+               "https://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPAD/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly' && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPHONE/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
               rm -f "$archive_path"
