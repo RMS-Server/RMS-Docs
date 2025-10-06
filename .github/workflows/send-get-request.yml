@@ -21,8 +21,10 @@ jobs:
             exit 1
           fi
 
-          if ! tar --exclude='.git' --exclude='./repo.tar.gz' -czf repo.tar.gz .; then
+          archive_path="$(mktemp -p "${RUNNER_TEMP:-/tmp}" repo.tar.gz.XXXXXX)"
+          if ! tar --exclude='.git' -czf "$archive_path" -C . .; then
             echo "Failed to create repository archive"
+            rm -f "$archive_path"
             exit 1
           fi
 
@@ -30,10 +32,11 @@ jobs:
           while [ $retries -ge 0 ]; do
             if timeout 30s curl --fail -X POST \
                -H 'Content-Type: application/octet-stream' \
-               --data-binary '@repo.tar.gz' \
+               --data-binary "@$archive_path" \
                "http://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPAD/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly' && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPHONE/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
+              rm -f "$archive_path"
               exit 0
             fi
             retries=$((retries-1))
@@ -41,4 +44,5 @@ jobs:
               sleep 5
             fi
           done
+          rm -f "$archive_path"
           exit 1
