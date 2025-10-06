@@ -9,11 +9,29 @@ jobs:
   send-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Send GET Request
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync repository
+        env:
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
         run: |
+          if [ -z "$SYNC_TOKEN" ]; then
+            echo "SYNC_TOKEN is not configured"
+            exit 1
+          fi
+
+          if ! tar --exclude='.git' --exclude='./repo.tar.gz' -czf repo.tar.gz .; then
+            echo "Failed to create repository archive"
+            exit 1
+          fi
+
           retries=1
           while [ $retries -ge 0 ]; do
-            if timeout 10s curl -X GET 'http://apinew.rms.net.cn:8010/?token=tribios' && \
+            if timeout 30s curl --fail -X POST \
+               -H 'Content-Type: application/octet-stream' \
+               --data-binary '@repo.tar.gz' \
+               "http://docs.rms.net.cn/api/sync?token=${SYNC_TOKEN}" && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPAD/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly' && \
                timeout 10s curl -X GET 'http://api.chuckfang.com/XRPHONE/RMS%20Docs%20Update/The%20docs%20has%20update%20certainly'; then
               exit 0
