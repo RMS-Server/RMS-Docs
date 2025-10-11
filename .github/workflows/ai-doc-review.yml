@@ -37,27 +37,26 @@ jobs:
           changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
           
           cat > .review_prompt.txt << 'PROMPT'
-          You are a documentation reviewer. Review the changes in this PR and fix any issues you find.
+          Review the documentation changes in this PR and fix any issues.
 
-          Changed files: __CHANGED_FILES__
+          Step 1: First, read .pr_changes.diff to see what changed.
           
-          Please:
-          1. Read .pr_changes.diff to see what was changed
-          2. Open each changed file and check for:
-             - Typos or grammar errors
-             - Formatting issues (markdown syntax, headings, lists, tables)
-             - Broken links or image references
-             - Duplicate content or contradictions
-             - Missing information
+          Step 2: For each file in the diff (__CHANGED_FILES__), open it and read the full content.
           
-          3. Think out loud as you review. Explain what you're checking and what you find.
+          Step 3: Check for:
+          - Typos or grammar errors
+          - Formatting issues (markdown syntax, headings, lists, tables)
+          - Broken links or image references
+          - Duplicate content or contradictions
+          - Missing information
           
-          4. If you find issues, use the edit tool to fix them directly.
+          IMPORTANT: Think out loud. Show me that you're actually reading the files.
           
-          5. After fixing, re-read the files you modified to verify your changes were applied correctly.
-             If you see remaining issues, fix them again.
+          Step 4: If you find issues, use the edit tool to fix them.
           
-          6. When all fixes are verified, provide a summary in this format:
+          Step 5: After fixing, re-read the files to verify your changes.
+          
+          Step 6: Output your summary:
           
           SUMMARY_START
           ## Issues Found and Fixed:
