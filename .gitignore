@@ -1,0 +1,19 @@
+# Downloaded binaries
+scripts/tricode
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+.tricode.log
+.review_prompt.txt
+.pr_changes.diff
