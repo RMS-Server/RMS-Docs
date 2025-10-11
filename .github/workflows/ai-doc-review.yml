@@ -34,12 +34,19 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > pr_changes.diff
           
-          cat > review_prompt.txt << 'PROMPT'
+          changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
+          
+          cat > review_prompt.txt << PROMPT
           You are reviewing a documentation project PR. Analyze changes and fix issues automatically.
+
+          IMPORTANT: Only review these files that were changed in this PR:
+          ${changed_files}
+          
+          Do NOT review any other files.
 
           Task:
           1. Read pr_changes.diff to understand what changed
-          2. Inspect all modified markdown/doc files for these specific issues:
+          2. For ONLY the files listed above, check for these specific issues:
              
              a) Content Duplication
                 - Check if new content duplicates existing sections
@@ -71,6 +78,8 @@ jobs:
           <your commit message here>
           COMMIT_MESSAGE_END
           PROMPT
+          
+          cat review_prompt.txt
 
       - name: Run Qwen agent
         env:
