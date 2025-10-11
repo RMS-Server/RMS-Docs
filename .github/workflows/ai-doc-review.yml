@@ -99,6 +99,7 @@ jobs:
           TRICODE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TRICODE_OPENAI_BASE_URL: "https://ai.tribios.top/v1"
           TRICODE_OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          PYTHONUNBUFFERED: "1"
         run: |
           set +e
           ./scripts/tricode "$(cat .review_prompt.txt)" 2>&1 | tee .tricode.log
