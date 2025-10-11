@@ -25,6 +25,10 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Qwen CLI
+        run: |
+          npm install -g @qwen-code/qwen-code
+
       - name: Prepare workspace
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
