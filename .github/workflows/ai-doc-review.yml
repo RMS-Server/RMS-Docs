@@ -68,15 +68,23 @@ jobs:
                 - Validate image references in Assets/
           
           3. For each issue found, directly edit the affected files to fix it
-          4. Summarize all fixes made with file names and issue types
-
-          Start review now.
           
-          After finishing fixes, generate a concise git commit message summarizing what you fixed.
-          Output format:
+          4. After completing all fixes, output TWO things:
+          
+          First, a detailed summary in this format:
+          SUMMARY_START
+          ## Fixed Issues:
+          - File: <filename> - Issue: <description>
+          - File: <filename> - Issue: <description>
+          ...
+          SUMMARY_END
+          
+          Then, a concise git commit message:
           COMMIT_MESSAGE_START
           <your commit message here>
           COMMIT_MESSAGE_END
+
+          Start review now.
           PROMPT
           
           cat review_prompt.txt
@@ -98,6 +106,7 @@ jobs:
           
           if git diff --quiet; then
             echo "No fixes applied"
+            rm -f pr_changes.diff qwen.log review_prompt.txt
             exit 0
           fi
           
@@ -119,8 +128,8 @@ jobs:
             const fs = require('fs');
             const log = fs.readFileSync('qwen.log', 'utf8');
             
-            const summaryMatch = log.match(/4\. Summarize.*?(?=COMMIT_MESSAGE_START|$)/s);
-            const summary = summaryMatch ? summaryMatch[0].trim() : 'Review completed, check the latest commit for details.';
+            const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
+            const summary = summaryMatch ? summaryMatch[1].trim() : 'No issues found or fixes applied.';
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -128,3 +137,7 @@ jobs:
               issue_number: context.issue.number,
               body: `## 🤖 AI Documentation Review\n\n${summary}\n\n---\n*Automated by Qwen agent*`
             });
+
+      - name: Cleanup
+        if: always()
+        run: rm -f pr_changes.diff qwen.log review_prompt.txt
