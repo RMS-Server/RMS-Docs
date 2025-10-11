@@ -36,17 +36,18 @@ jobs:
           
           changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
           
-          cat > review_prompt.txt << PROMPT
+          cat > review_prompt.txt << 'PROMPT'
           You are reviewing a documentation project PR. Analyze changes and fix issues automatically.
 
           IMPORTANT: Only review these files that were changed in this PR:
-          ${changed_files}
+          __CHANGED_FILES__
           
           Do NOT review any other files.
 
           Task:
-          1. Read pr_changes.diff to understand what changed
-          2. For ONLY the files listed above, check for these specific issues:
+          1. First, read pr_changes.diff carefully to understand ALL changes
+          2. Then, open and read the complete content of ONLY the files listed above
+          3. For each file, carefully check for these specific issues:
              
              a) Content Duplication
                 - Check if new content duplicates existing sections
@@ -67,9 +68,11 @@ jobs:
                 - Verify file paths and anchors exist
                 - Validate image references in Assets/
           
-          3. For each issue found, directly edit the affected files to fix it
+          4. Think carefully: Are there ANY issues? Even small ones count.
+             If you find issues, edit the files to fix them.
+             If truly no issues exist, that's fine too.
           
-          4. After completing all fixes, output TWO things:
+          5. After completing review, output TWO things:
           
           First, a detailed summary in this format:
           SUMMARY_START
@@ -87,7 +90,11 @@ jobs:
           Start review now.
           PROMPT
           
+          sed -i "s|__CHANGED_FILES__|${changed_files}|g" review_prompt.txt
+          
+          echo "=== Review Prompt ==="
           cat review_prompt.txt
+          echo "==================="
 
       - name: Run Qwen agent
         env:
@@ -95,9 +102,23 @@ jobs:
           OPENAI_BASE_URL: "https://ai.tribios.top/v1"
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
+          set +e
           qwen --prompt "$(cat review_prompt.txt)" \
-               --approval-mode yolo \
-               2>&1 | tee qwen.log
+               --approval-mode yolo 2>&1 | tee qwen.log
+          qwen_exit_code=$?
+          set -e
+          
+          echo "=== Qwen Exit Code: $qwen_exit_code ==="
+          
+          if [ ! -f qwen.log ] || [ ! -s qwen.log ]; then
+            echo "ERROR: qwen.log is missing or empty"
+            echo "Creating fallback log"
+            echo "Qwen execution failed or produced no output" > qwen.log
+          fi
+          
+          echo "=== Qwen Output ==="
+          cat qwen.log
+          echo "=================="
 
       - name: Commit and push fixes
         run: |
@@ -121,11 +142,17 @@ jobs:
           git push
 
       - name: Post review summary
-        if: success()
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            
+            if (!fs.existsSync('qwen.log')) {
+              console.log('qwen.log not found, skipping comment');
+              return;
+            }
+            
             const log = fs.readFileSync('qwen.log', 'utf8');
             
             const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
