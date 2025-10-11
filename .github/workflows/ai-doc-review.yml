@@ -25,60 +25,83 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Qwen CLI
+        run: |
+          npm install -g @qwen-code/qwen-code
+
       - name: Prepare workspace
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > pr_changes.diff
+          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > /tmp/pr_changes.diff
           
-          cat > review_prompt.txt << 'PROMPT'
-          You are reviewing a documentation project PR. Analyze changes and fix issues automatically.
+          changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
+          
+          cat > /tmp/review_prompt.txt << 'PROMPT'
+          You are a documentation reviewer. Review the changes in this PR and fix any issues you find.
 
-          Task:
-          1. Read pr_changes.diff to understand what changed
-          2. Inspect all modified markdown/doc files for these specific issues:
-             
-             a) Content Duplication
-                - Check if new content duplicates existing sections
-                - Find repeated paragraphs or redundant information
-             
-             b) Logical Conflicts
-                - Identify contradictions with existing documentation
-                - Check version mismatches or conflicting instructions
-             
-             c) Formatting & Readability
-                - Verify markdown syntax correctness
-                - Check heading hierarchy (proper # levels)
-                - Ensure lists, tables, code blocks are properly formatted
-                - Validate indentation and line breaks
-             
-             d) Broken References
-                - Check all links (both internal [](file.md) and external http://)
-                - Verify file paths and anchors exist
-                - Validate image references in Assets/
+          Changed files: __CHANGED_FILES__
           
-          3. For each issue found, directly edit the affected files to fix it
-          4. Summarize all fixes made with file names and issue types
+          Please:
+          1. Read /tmp/pr_changes.diff to see what was changed
+          2. Open each changed file and check for:
+             - Typos or grammar errors
+             - Formatting issues (markdown syntax, headings, lists, tables)
+             - Broken links or image references
+             - Duplicate content or contradictions
+             - Missing information
+          
+          3. Think out loud as you review. Explain what you're checking and what you find.
+          
+          4. If you find issues, use the edit tool to fix them directly.
+          
+          5. After fixing, re-read the files you modified to verify your changes were applied correctly.
+             If you see remaining issues, fix them again.
+          
+          6. When all fixes are verified, provide a summary in this format:
+          
+          SUMMARY_START
+          ## Issues Found and Fixed:
+          [If issues were found and fixed, list them here with file names]
+          [If no issues were found, write: "No issues detected in the changes."]
+          SUMMARY_END
+          
+          COMMIT_MESSAGE_START
+          [ONLY if you actually edited files, write a commit message here]
+          [If no edits were made, write: NO_EDITS]
+          COMMIT_MESSAGE_END
 
           Start review now.
-          
-          After finishing fixes, generate a concise git commit message summarizing what you fixed.
-          Output format:
-          COMMIT_MESSAGE_START
-          <your commit message here>
-          COMMIT_MESSAGE_END
           PROMPT
+          
+          sed -i "s|__CHANGED_FILES__|${changed_files}|g" /tmp/review_prompt.txt
+          
+          echo "=== Review Prompt ==="
+          cat /tmp/review_prompt.txt
+          echo "==================="
 
       - name: Run Qwen agent
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_BASE_URL: "https://ai.tribios.top/v1"
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
-          qwen --prompt "$(cat review_prompt.txt)" \
-               --openai-api-key "$OPENAI_API_KEY" \
-               --openai-base-url "$OPENAI_BASE_URL" \
-               --model "gemini-2.5-pro" \
-               --approval-mode yolo \
-               2>&1 | tee qwen.log
+          set +e
+          qwen --prompt "$(cat /tmp/review_prompt.txt)" \
+               --approval-mode yolo 2>&1 | tee /tmp/qwen.log
+          qwen_exit_code=$?
+          set -e
+          
+          echo "=== Qwen Exit Code: $qwen_exit_code ==="
+          
+          if [ ! -f /tmp/qwen.log ] || [ ! -s /tmp/qwen.log ]; then
+            echo "ERROR: qwen.log is missing or empty"
+            echo "Creating fallback log"
+            echo "Qwen execution failed or produced no output" > /tmp/qwen.log
+          fi
+          
+          echo "=== Qwen Output ==="
+          cat /tmp/qwen.log
+          echo "=================="
 
       - name: Commit and push fixes
         run: |
@@ -92,24 +115,32 @@ jobs:
           
           git add -A
           
-          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' qwen.log | sed '1d;$d')
-          if [ -z "$commit_msg" ]; then
-            commit_msg="docs: AI auto-fix from documentation review"
+          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' /tmp/qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
+          
+          if [ -z "$commit_msg" ] || [ "$commit_msg" = "NO_EDITS" ]; then
+            echo "AI did not make any edits"
+            exit 0
           fi
           
           git commit -m "$commit_msg"
           git push
 
       - name: Post review summary
-        if: success()
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const log = fs.readFileSync('qwen.log', 'utf8');
             
-            const summaryMatch = log.match(/4\. Summarize.*?(?=COMMIT_MESSAGE_START|$)/s);
-            const summary = summaryMatch ? summaryMatch[0].trim() : 'Review completed, check the latest commit for details.';
+            if (!fs.existsSync('/tmp/qwen.log')) {
+              console.log('qwen.log not found, skipping comment');
+              return;
+            }
+            
+            const log = fs.readFileSync('/tmp/qwen.log', 'utf8');
+            
+            const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
+            const summary = summaryMatch ? summaryMatch[1].trim() : 'No issues found or fixes applied.';
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -117,3 +148,5 @@ jobs:
               issue_number: context.issue.number,
               body: `## 🤖 AI Documentation Review\n\n${summary}\n\n---\n*Automated by Qwen agent*`
             });
+
+
