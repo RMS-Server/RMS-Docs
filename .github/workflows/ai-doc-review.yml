@@ -32,51 +32,61 @@ jobs:
       - name: Prepare workspace
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > /tmp/pr_changes.diff
           
-          changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
-          
-          cat > /tmp/review_prompt.txt << 'PROMPT'
-          You are a documentation reviewer. Review the changes in this PR and fix any issues you find.
+          cat > .review_prompt.txt << 'PROMPT'
+          你是一个Pull Request自动审查和修复的AI助手。这是一个Markdown文档库项目。
 
-          Changed files: __CHANGED_FILES__
-          
-          Please:
-          1. Read /tmp/pr_changes.diff to see what was changed
-          2. Open each changed file and check for:
-             - Typos or grammar errors
-             - Formatting issues (markdown syntax, headings, lists, tables)
-             - Broken links or image references
-             - Duplicate content or contradictions
-             - Missing information
-          
-          3. Think out loud as you review. Explain what you're checking and what you find.
-          
-          4. If you find issues, use the edit tool to fix them directly.
-          
-          5. After fixing, re-read the files you modified to verify your changes were applied correctly.
-             If you see remaining issues, fix them again.
-          
-          6. When all fixes are verified, provide a summary in this format:
-          
+          **重要**：当前你在PR分支上，base分支是master。你需要找到这个PR相对于base分支的所有变更。
+
+          **第一步**：使用正确的git命令查看PR变更
+          - 不要用 git diff（这只会看到工作区的变更，而工作区是干净的）
+          - 应该用：git diff origin/master...HEAD 或 git log -p origin/master..HEAD
+          - 或者先用 git log origin/master..HEAD 看有哪些提交，再查看这些提交的变更
+
+          **审查重点**：
+          1. 是否存在重复内容或冲突
+          2. 是否存在错误的引用链接
+          3. 是否存在拼写错误
+          4. Markdown语法规范检查：
+             - 无序列表：`-` 后面必须有空格（`- 内容` 而不是 `-内容`）
+             - 有序列表：数字后的 `.` 后面必须有空格
+             - 标题：`#` 后面必须有空格（`# 标题` 而不是 `#标题`）
+             - 引用块：`>` 后面必须有空格
+             - 任务列表：格式必须是 `- [ ]` 或 `- [x]`（方括号内外都要有空格）
+             - 链接格式是否正确
+             - 代码块标记是否完整（开始和结束的 ``` 必须成对）
+             - 表格格式：表头分隔行格式正确（`|---|---|`），列对齐一致
+             - 水平分隔线：`---` 或 `***` 前后应该有空行
+             - 嵌套列表缩进：子列表应该用2或4个空格缩进
+             - 避免行尾多余空格（可能导致意外换行）
+          5. 内容与文件名匹配度检查：
+             - 文件内容是否与文件名主题相符（例如：Rules.md应该包含规则内容，而不是其他无关内容）
+             - 如果文件名有编号前缀（如 `1. Rules.md`），检查内容是否放在了正确的文件中
+
+          **工作流程**：
+          - 在执行每个操作前，先说明你准备做什么（比如"我准备运行git diff origin/master...HEAD查看PR变更"）
+          - 然后立即调用工具执行
+          - 如果发现问题，进行修复
+
+          **输出格式**：
+          完成后必须按以下格式输出：
+
           SUMMARY_START
           ## Issues Found and Fixed:
-          [If issues were found and fixed, list them here with file names]
-          [If no issues were found, write: "No issues detected in the changes."]
+          [如果发现并修复了问题，列出文件名和问题]
+          [如果没有发现问题，写：No issues detected in the changes.]
           SUMMARY_END
-          
+
           COMMIT_MESSAGE_START
-          [ONLY if you actually edited files, write a commit message here]
-          [If no edits were made, write: NO_EDITS]
+          [仅当你实际编辑了文件时，写一个commit message]
+          [如果没有做任何编辑，写：NO_EDITS]
           COMMIT_MESSAGE_END
 
-          Start review now.
+          现在开始review。
           PROMPT
           
-          sed -i "s|__CHANGED_FILES__|${changed_files}|g" /tmp/review_prompt.txt
-          
           echo "=== Review Prompt ==="
-          cat /tmp/review_prompt.txt
+          cat .review_prompt.txt
           echo "==================="
 
       - name: Run Qwen agent
@@ -86,21 +96,21 @@ jobs:
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
           set +e
-          qwen --prompt "$(cat /tmp/review_prompt.txt)" \
-               --approval-mode yolo 2>&1 | tee /tmp/qwen.log
+          qwen --prompt "$(cat .review_prompt.txt)" \
+               --approval-mode yolo 2>&1 | tee .qwen.log
           qwen_exit_code=$?
           set -e
           
           echo "=== Qwen Exit Code: $qwen_exit_code ==="
           
-          if [ ! -f /tmp/qwen.log ] || [ ! -s /tmp/qwen.log ]; then
+          if [ ! -f .qwen.log ] || [ ! -s .qwen.log ]; then
             echo "ERROR: qwen.log is missing or empty"
             echo "Creating fallback log"
-            echo "Qwen execution failed or produced no output" > /tmp/qwen.log
+            echo "Qwen execution failed or produced no output" > .qwen.log
           fi
           
           echo "=== Qwen Output ==="
-          cat /tmp/qwen.log
+          cat .qwen.log
           echo "=================="
 
       - name: Commit and push fixes
@@ -113,9 +123,9 @@ jobs:
             exit 0
           fi
           
-          git add -A
+          git add -A -- ':!.pr_changes.diff' ':!.review_prompt.txt' ':!.qwen.log'
           
-          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' /tmp/qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
+          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' .qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
           
           if [ -z "$commit_msg" ] || [ "$commit_msg" = "NO_EDITS" ]; then
             echo "AI did not make any edits"
@@ -132,12 +142,12 @@ jobs:
           script: |
             const fs = require('fs');
             
-            if (!fs.existsSync('/tmp/qwen.log')) {
+            if (!fs.existsSync('.qwen.log')) {
               console.log('qwen.log not found, skipping comment');
               return;
             }
             
-            const log = fs.readFileSync('/tmp/qwen.log', 'utf8');
+            const log = fs.readFileSync('.qwen.log', 'utf8');
             
             const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
             const summary = summaryMatch ? summaryMatch[1].trim() : 'No issues found or fixes applied.';
@@ -146,7 +156,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `## 🤖 AI Documentation Review\n\n${summary}\n\n---\n*Automated by Qwen agent*`
+              body: `## 🤖 AI Documentation Review\n\n${summary}`
             });
 
 
