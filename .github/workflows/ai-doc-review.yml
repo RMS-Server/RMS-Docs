@@ -1,37 +1,39 @@
-name: Qwen CLI PR Auto Review & Fix
+name: Tricode CLI PR Auto Review & Fix
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to review (leave empty for current branch)'
+        required: false
+        type: string
 
 jobs:
-  qwen-agent-review:
+  tricode-agent-review:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != 'github-actions[bot]'
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.user.login != 'github-actions[bot]'
     permissions:
       contents: write
       pull-requests: write
     
     steps:
-      - name: Checkout PR branch
+      - name: Checkout branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && (inputs.branch || github.ref) || github.event.pull_request.head.ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Qwen CLI
+      - name: Make tricode executable
         run: |
-          npm install -g @qwen-code/qwen-code
+          chmod +x scripts/tricode
 
       - name: Prepare workspace
         run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
+          BASE_REF="${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'master' }}"
+          git fetch origin $BASE_REF
           
           cat > .review_prompt.txt << 'PROMPT'
           你是一个Pull Request自动审查和修复的AI助手。这是一个Markdown文档库项目。
@@ -89,28 +91,27 @@ jobs:
           cat .review_prompt.txt
           echo "==================="
 
-      - name: Run Qwen agent
+      - name: Run Tricode agent
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_BASE_URL: "https://ai.tribios.top/v1"
-          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          TRICODE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TRICODE_OPENAI_BASE_URL: "https://ai.tribios.top/v1"
+          TRICODE_OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
           set +e
-          qwen --prompt "$(cat .review_prompt.txt)" \
-               --approval-mode yolo 2>&1 | tee .qwen.log
-          qwen_exit_code=$?
+          ./scripts/tricode "$(cat .review_prompt.txt)" 2>&1 | tee .tricode.log
+          tricode_exit_code=$?
           set -e
           
-          echo "=== Qwen Exit Code: $qwen_exit_code ==="
+          echo "=== Tricode Exit Code: $tricode_exit_code ==="
           
-          if [ ! -f .qwen.log ] || [ ! -s .qwen.log ]; then
-            echo "ERROR: qwen.log is missing or empty"
+          if [ ! -f .tricode.log ] || [ ! -s .tricode.log ]; then
+            echo "ERROR: tricode.log is missing or empty"
             echo "Creating fallback log"
-            echo "Qwen execution failed or produced no output" > .qwen.log
+            echo "Tricode execution failed or produced no output" > .tricode.log
           fi
           
-          echo "=== Qwen Output ==="
-          cat .qwen.log
+          echo "=== Tricode Output ==="
+          cat .tricode.log
           echo "=================="
 
       - name: Commit and push fixes
@@ -123,9 +124,9 @@ jobs:
             exit 0
           fi
           
-          git add -A -- ':!.pr_changes.diff' ':!.review_prompt.txt' ':!.qwen.log'
+          git add -A -- ':!.pr_changes.diff' ':!.review_prompt.txt' ':!.tricode.log'
           
-          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' .qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
+          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' .tricode.log | sed '1d;$d' | tr -d '\r' | xargs)
           
           if [ -z "$commit_msg" ] || [ "$commit_msg" = "NO_EDITS" ]; then
             echo "AI did not make any edits"
@@ -136,18 +137,18 @@ jobs:
           git push
 
       - name: Post review summary
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             
-            if (!fs.existsSync('.qwen.log')) {
-              console.log('qwen.log not found, skipping comment');
+            if (!fs.existsSync('.tricode.log')) {
+              console.log('tricode.log not found, skipping comment');
               return;
             }
             
-            const log = fs.readFileSync('.qwen.log', 'utf8');
+            const log = fs.readFileSync('.tricode.log', 'utf8');
             
             const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
             const summary = summaryMatch ? summaryMatch[1].trim() : 'No issues found or fixes applied.';
