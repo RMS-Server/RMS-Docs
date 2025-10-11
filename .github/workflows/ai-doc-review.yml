@@ -32,17 +32,17 @@ jobs:
       - name: Prepare workspace
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > /tmp/pr_changes.diff
+          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > .pr_changes.diff
           
           changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
           
-          cat > /tmp/review_prompt.txt << 'PROMPT'
+          cat > .review_prompt.txt << 'PROMPT'
           You are a documentation reviewer. Review the changes in this PR and fix any issues you find.
 
           Changed files: __CHANGED_FILES__
           
           Please:
-          1. Read /tmp/pr_changes.diff to see what was changed
+          1. Read .pr_changes.diff to see what was changed
           2. Open each changed file and check for:
              - Typos or grammar errors
              - Formatting issues (markdown syntax, headings, lists, tables)
@@ -73,10 +73,10 @@ jobs:
           Start review now.
           PROMPT
           
-          sed -i "s|__CHANGED_FILES__|${changed_files}|g" /tmp/review_prompt.txt
+          sed -i "s|__CHANGED_FILES__|${changed_files}|g" .review_prompt.txt
           
           echo "=== Review Prompt ==="
-          cat /tmp/review_prompt.txt
+          cat .review_prompt.txt
           echo "==================="
 
       - name: Run Qwen agent
@@ -86,21 +86,21 @@ jobs:
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
           set +e
-          qwen --prompt "$(cat /tmp/review_prompt.txt)" \
-               --approval-mode yolo 2>&1 | tee /tmp/qwen.log
+          qwen --prompt "$(cat .review_prompt.txt)" \
+               --approval-mode yolo 2>&1 | tee .qwen.log
           qwen_exit_code=$?
           set -e
           
           echo "=== Qwen Exit Code: $qwen_exit_code ==="
           
-          if [ ! -f /tmp/qwen.log ] || [ ! -s /tmp/qwen.log ]; then
+          if [ ! -f .qwen.log ] || [ ! -s .qwen.log ]; then
             echo "ERROR: qwen.log is missing or empty"
             echo "Creating fallback log"
-            echo "Qwen execution failed or produced no output" > /tmp/qwen.log
+            echo "Qwen execution failed or produced no output" > .qwen.log
           fi
           
           echo "=== Qwen Output ==="
-          cat /tmp/qwen.log
+          cat .qwen.log
           echo "=================="
 
       - name: Commit and push fixes
@@ -113,9 +113,9 @@ jobs:
             exit 0
           fi
           
-          git add -A
+          git add -A -- ':!.pr_changes.diff' ':!.review_prompt.txt' ':!.qwen.log'
           
-          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' /tmp/qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
+          commit_msg=$(sed -n '/COMMIT_MESSAGE_START/,/COMMIT_MESSAGE_END/p' .qwen.log | sed '1d;$d' | tr -d '\r' | xargs)
           
           if [ -z "$commit_msg" ] || [ "$commit_msg" = "NO_EDITS" ]; then
             echo "AI did not make any edits"
@@ -132,12 +132,12 @@ jobs:
           script: |
             const fs = require('fs');
             
-            if (!fs.existsSync('/tmp/qwen.log')) {
+            if (!fs.existsSync('.qwen.log')) {
               console.log('qwen.log not found, skipping comment');
               return;
             }
             
-            const log = fs.readFileSync('/tmp/qwen.log', 'utf8');
+            const log = fs.readFileSync('.qwen.log', 'utf8');
             
             const summaryMatch = log.match(/SUMMARY_START\s*\n([\s\S]*?)\nSUMMARY_END/);
             const summary = summaryMatch ? summaryMatch[1].trim() : 'No issues found or fixes applied.';
