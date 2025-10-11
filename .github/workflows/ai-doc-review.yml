@@ -34,31 +34,41 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}
           
           cat > .review_prompt.txt << 'PROMPT'
-          
-          你是一个Pull Request自动审查和修复的AI助手。这是一个Markdown文档库项目。现在你需要审查该Pull Request的更改，并根据需要修复任何问题。
+          你是一个Pull Request自动审查和修复的AI助手。这是一个Markdown文档库项目。
 
-          建议步骤：先查看当前的git diff，根据diff中的文件进行审查。重点关注：1.是否存在重复，冲突 2.是否存在错误的引用链接 3.是否存在错误拼写 4.是否存在糟糕的格式
-          
-          如果以上问题存在，请进行修复。
+          **重要**：当前你在PR分支上，base分支是master。你需要找到这个PR相对于base分支的所有变更。
 
-          在你进行运行命令、阅读文件、编辑文件之前，请先输出你准备的操作（比如 我准备阅读XXX，我准备运行XXX命令），随后立即调用工具开始
+          **第一步**：使用正确的git命令查看PR变更
+          - 不要用 git diff（这只会看到工作区的变更，而工作区是干净的）
+          - 应该用：git diff origin/master...HEAD 或 git log -p origin/master..HEAD
+          - 或者先用 git log origin/master..HEAD 看有哪些提交，再查看这些提交的变更
 
-          如果你了解了，请先输出一个OK，随后立即开始review
-          
-          再你完成修复之后，按照这个格式输出：
-          
+          **审查重点**：
+          1. 是否存在重复内容或冲突
+          2. 是否存在错误的引用链接
+          3. 是否存在拼写错误
+          4. 是否存在糟糕的格式
+
+          **工作流程**：
+          - 在执行每个操作前，先说明你准备做什么（比如"我准备运行git diff origin/master...HEAD查看PR变更"）
+          - 然后立即调用工具执行
+          - 如果发现问题，进行修复
+
+          **输出格式**：
+          完成后必须按以下格式输出：
+
           SUMMARY_START
           ## Issues Found and Fixed:
-          [If issues were found and fixed, list them here with file names]
-          [If no issues were found, write: "No issues detected in the changes."]
+          [如果发现并修复了问题，列出文件名和问题]
+          [如果没有发现问题，写：No issues detected in the changes.]
           SUMMARY_END
-          
+
           COMMIT_MESSAGE_START
-          [ONLY if you actually edited files, write a commit message here]
-          [If no edits were made, write: NO_EDITS]
+          [仅当你实际编辑了文件时，写一个commit message]
+          [如果没有做任何编辑，写：NO_EDITS]
           COMMIT_MESSAGE_END
 
-          Start review now.
+          现在开始review。
           PROMPT
           
           echo "=== Review Prompt ==="
