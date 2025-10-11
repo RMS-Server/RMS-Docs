@@ -32,31 +32,18 @@ jobs:
       - name: Prepare workspace
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > .pr_changes.diff
-          
-          changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.(md|markdown)$' | tr '\n' ' ')
           
           cat > .review_prompt.txt << 'PROMPT'
-          Review the documentation changes in this PR and fix any issues.
+          
+          你是一个Pull Request自动审查和修复的AI助手。这是一个Markdown文档库项目。现在你需要审查该Pull Request的更改，并根据需要修复任何问题。
 
-          Step 1: First, read .pr_changes.diff to see what changed.
+          建议步骤：先查看当前的git diff，根据diff中的文件进行审查。重点关注：1.是否存在重复，冲突 2.是否存在错误的引用链接 3.是否存在错误拼写 4.是否存在糟糕的格式
           
-          Step 2: For each file in the diff (__CHANGED_FILES__), open it and read the full content.
+          如果以上问题存在，请进行修复。
+
+          如果你了解了，请先输出一个OK，随后立即开始review
           
-          Step 3: Check for:
-          - Typos or grammar errors
-          - Formatting issues (markdown syntax, headings, lists, tables)
-          - Broken links or image references
-          - Duplicate content or contradictions
-          - Missing information
-          
-          IMPORTANT: Think out loud. Show me that you're actually reading the files.
-          
-          Step 4: If you find issues, use the edit tool to fix them.
-          
-          Step 5: After fixing, re-read the files to verify your changes.
-          
-          Step 6: Output your summary:
+          再你完成修复之后，按照这个格式输出：
           
           SUMMARY_START
           ## Issues Found and Fixed:
@@ -71,8 +58,6 @@ jobs:
 
           Start review now.
           PROMPT
-          
-          sed -i "s|__CHANGED_FILES__|${changed_files}|g" .review_prompt.txt
           
           echo "=== Review Prompt ==="
           cat .review_prompt.txt
