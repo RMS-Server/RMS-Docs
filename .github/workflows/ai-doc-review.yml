@@ -28,9 +28,9 @@ jobs:
 
       - name: Download tricode
         run: |
-          TRICODE_VERSION="v0.1.0"
+          TRICODE_VERSION="v0.4.0"
           mkdir -p scripts
-          wget -q https://github.com/Trirrin/Tricode/releases/download/${TRICODE_VERSION}/tricode -O scripts/tricode
+          wget -q https://github.com/Trirrin/Tricode/releases/download/${TRICODE_VERSION}/tricode-linux-x86_64-${TRICODE_VERSION} -O scripts/tricode
           chmod +x scripts/tricode
 
       - name: Prepare workspace
