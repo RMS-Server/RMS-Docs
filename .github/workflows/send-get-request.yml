@@ -38,6 +38,7 @@ jobs:
           sync_once() {
             local response_path="$temp_dir/response.json"
             local -a update_files=()
+            local -a deleted_files=()
 
             if ! curl --fail -sS -X POST \
                  -H 'Content-Type: application/json' \
@@ -53,9 +54,21 @@ jobs:
               return 1
             fi
 
-            if [ ${#update_files[@]} -eq 0 ]; then
-              echo "No files require sync"
+            if ! mapfile -t deleted_files < <(python3 scripts/parse_manifest_response.py "$response_path" --field deleted); then
+              echo "Failed to parse deleted entries"
+              return 1
+            fi
+
+            if [ ${#update_files[@]} -eq 0 ] && [ ${#deleted_files[@]} -eq 0 ]; then
+              echo "No changes required"
               return 0
+            fi
+
+            if [ ${#deleted_files[@]} -gt 0 ]; then
+              echo "Removed files reported by server:"
+              for relpath in "${deleted_files[@]}"; do
+                echo "  $relpath"
+              done
             fi
 
             for relpath in "${update_files[@]}"; do

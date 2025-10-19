@@ -1,56 +1,100 @@
 #!/usr/bin/env python3
+"""Generate a manifest payload for the /api/sync endpoint."""
 
+from __future__ import annotations
+
+import argparse
 import hashlib
 import json
 import os
-import sys
+from pathlib import Path
+from typing import Iterator, Tuple
+
+# Chunk size keeps memory usage predictable during hashing.
+_CHUNK_SIZE = 1 << 20
+_EXCLUDE_NAMES = {".git", ".github", "__pycache__"}
 
 
-def should_skip(relpath):
-    return (
-        relpath.startswith('.git/')
-        or relpath == '.git'
-        or relpath.startswith('.github/')
-        or relpath == '.github'
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Generate manifest JSON for /api/sync")
+    parser.add_argument(
+        "output",
+        type=Path,
+        help="Path to write the manifest JSON file",
     )
+    parser.add_argument(
+        "--root",
+        dest="root",
+        type=Path,
+        default=None,
+        help="Directory to scan; defaults to ./context when present",
+    )
+    return parser
 
 
-def iter_files(root):
+def determine_root(candidate: Path | None) -> Path:
+    # Prefer the context directory to match server expectations.
+    if candidate is not None:
+        return candidate.resolve()
+    context_dir = Path("context")
+    if context_dir.is_dir():
+        return context_dir.resolve()
+    return Path(".").resolve()
+
+
+def should_skip(relative: Path) -> bool:
+    return any(part in _EXCLUDE_NAMES for part in relative.parts)
+
+
+def iter_files(root: Path) -> Iterator[Tuple[Path, Path]]:
+    # Walk the directory tree while pruning unwanted folders.
     for dirpath, dirnames, filenames in os.walk(root, topdown=True):
+        base = Path(dirpath)
+        rel_dir = base.relative_to(root)
         dirnames[:] = [
-            d
-            for d in dirnames
-            if not should_skip(os.path.relpath(os.path.join(dirpath, d), root))
+            name
+            for name in dirnames
+            if not should_skip(rel_dir / name)
         ]
         for name in filenames:
-            rel = os.path.relpath(os.path.join(dirpath, name), root)
-            if should_skip(rel):
+            relative_path = rel_dir / name
+            if should_skip(relative_path):
                 continue
-            yield dirpath, name, rel
+            yield base / name, relative_path
 
 
-def main():
-    if len(sys.argv) != 2:
-        sys.stderr.write("Usage: generate_manifest.py <output>\n")
-        return 1
+def compute_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(_CHUNK_SIZE), b""):
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
 
-    target = sys.argv[1]
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+    root = determine_root(args.root)
+
     files = []
 
-    for dirpath, name, rel in iter_files('.'):
-        hasher = hashlib.sha256()
-        with open(os.path.join(dirpath, name), 'rb') as fh:
-            for chunk in iter(lambda: fh.read(1 << 20), b''):
-                hasher.update(chunk)
-        files.append({'path': rel, 'sha256': hasher.hexdigest()})
+    for absolute, relative in iter_files(root):
+        digest = compute_sha256(absolute)
+        # Persist manifest entries relative to the sync root.
+        files.append({"path": relative.as_posix(), "sha256": digest})
 
-    files.sort(key=lambda item: item['path'])
+    # Stable ordering keeps downstream comparisons straightforward.
+    files.sort(key=lambda item: item["path"])
 
-    with open(target, 'w', encoding='utf-8') as out:
-        json.dump({'files': files}, out, ensure_ascii=False)
+    # Ensure the output directory exists before writing the manifest file.
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("w", encoding="utf-8") as handle:
+        json.dump({"files": files}, handle, ensure_ascii=False)
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())
