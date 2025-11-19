@@ -6,53 +6,52 @@ Based on the provided RMS documentation changes, generate a QQ group announcemen
 
 [Time Requirements]
 - The context above will provide the current real-world time in Beijing (UTC+8).
-- The “更新时间” line in the template must use the calendar date (year, month, day) corresponding to that Beijing time, with all digits in ASCII (half-width) form.
+- Near the top of the announcement, you must include a line in the form “更新时间：YYYY年MM月DD日”, where the date corresponds to the Beijing calendar date and all digits are ASCII (half-width).
 
-[Output Format and Template]
-- You must strictly follow the announcement template below. Only replace the “****” placeholders; every other character (including spaces, newlines, punctuation, indentation, “- ”, and “---”) must remain exactly as-is.
-- The leading “- ” at the start of lines and the standalone line “---” are considered part of the template and are allowed. Do not introduce any additional Markdown or HTML formatting symbols (such as **, *, #, [ ], >, _, ~, etc.).
-
-[Announcement Template (only replace **** placeholders)]
-【RMS 文档内容更新公告】
-更新时间：****年****月****日
-项目进度更新：
-- 项目名：**** 进度变化：**** 参与玩家：****、****
----
-- 项目名：**** 进度变化：**** 参与玩家：****、****
----
-详情：https://docs.rms.net.cn/****
-感谢所有参与建设的玩家！服务器的发展离不开每一位的贡献。欢迎更多玩家加入我们的建设项目！
-文档公告更新：
-- ****
-- ****
-详情：https://docs.rms.net.cn/****
-—— RMS管理层
----
+[Output Structure]
+- Write a short, readable announcement in natural Simplified Chinese, suitable for posting directly to a QQ group, not a mechanical template fill.
+- Use the following structure as a flexible framework (you may adjust the exact wording, but keep the meaning and ordering roughly consistent):
+  1. A title line, for example: “【RMS 文档内容更新公告】”.
+  2. A date line in the form “更新时间：YYYY年MM月DD日”.
+  3. An optional “项目进度更新” section for in-game project progress:
+     - Only include this section when there is at least one real, concrete project progress change visible in the provided content (for example, a project started, a build reaching a new phase, or a project completed).
+     - If there is no such progress, omit this section entirely instead of writing “无” or “暂无更新”.
+     - When present, this section usually starts with a line like “项目进度更新：”, followed by one or more short bullet lines.
+     - Each bullet should briefly mention the project name, the progress change, and the main participants when they can be determined.
+  4. A “文档公告更新” section for general documentation changes:
+     - This section is always present.
+     - It usually starts with a line like “文档公告更新：”, followed by one or more short bullet lines summarizing the main documentation changes.
+  5. When a project or documentation bullet maps to a single Markdown file and there is no adjacent bullet in the same section that maps to the exact same file, append a full-width parenthesized link at the end of that bullet (details in the Link Generation Rules). When, and only when, several adjacent bullets in the same section all point to the exact same file, place those bullets together and add one combined detail line after the group in the form “（关于以上详情，请见：https://docs.rms.net.cn/...）”, and do not attach any per-bullet link to those grouped bullets. This grouping rule applies equally to “项目进度更新” bullets and to “文档公告更新” bullets.
+  6. The fixed appreciation sentence:
+     “感谢所有参与建设的玩家！服务器的发展离不开每一位的贡献。欢迎更多玩家加入我们的建设项目！”
+  7. A signature line: “—— RMS管理层”.
+- You may use bullet points beginning with “- ” or short standalone lines, but must not introduce any additional Markdown formatting symbols such as **, *, #, [ ], >, _, ~, etc.
 
 [Content Source and Filtering]
 - Only extract substantive content changes from the Markdown text: newly added paragraphs, meaningfully revised descriptions, structural adjustments, etc.
 - You must ignore non-content changes: whitespace, indentation, minor punctuation tweaks, file name or path changes, metadata updates, and similar noise.
 - Project names and player names should, whenever possible, come from names or nicknames explicitly mentioned in the documentation content. If you cannot determine them reliably, use general descriptive labels (for example “公共文档更新” or “多人协作项目”) and do not invent specific new names.
-- If you can identify a project owner or lead from the content, that person must be included in the corresponding “参与玩家” list.
+- If you can identify a project owner or lead from the content, that person must be included in the corresponding project’s participants.
 
 [Language and Style]
-- Each “进度变化” and “文档公告更新” entry must be a concise Chinese sentence, no longer than 20 Chinese characters.
+- Each “项目进度更新” bullet and each “文档公告更新” bullet must be a concise Chinese sentence or short pair of sentences. There is no hard limit on character count, but keep each bullet focused and readable.
+- Every bullet should contain at least one concrete piece of information rather than vague words like “重构”, “优化”, or “扩充” by themselves. Prefer to mention specific section titles, page names, feature names, version numbers, IP addresses, important commands, or parameters taken directly from the documentation, so that players can immediately recognize what changed.
+- When documentation changes are mainly about navigation or structure, prioritize describing which entries or pages were added, removed, or renamed, instead of only saying that a page was “重构”.
 - The final announcement must not contain any Git or software development terms (for example: commit, PR, branch, diff, repo, push, merge, etc.).
 - You may keep Minecraft-related terms (such as plugin, mod, config, world, spawn, region, build, structure, template, item, block, command, permission, rank, server, worldedit, axiom, multiverse, etc.).
 - The emotional sentence “感谢所有参与建设的玩家！服务器的发展离不开每一位的贡献。欢迎更多玩家加入我们的建设项目！” must be output exactly, without any changes.
 
 [Link Generation Rules]
-- For the two “详情” lines, generate real URLs based on the Markdown documentation files touched by this change.
+- Generate real URLs based on the Markdown documentation files touched by this change.
 - The URL format is:
   https://docs.rms.net.cn/ + the file name with the “.md” suffix removed, and with spaces inside the name replaced by “%20”.
   For example:
   - “0. Home.md” → “https://docs.rms.net.cn/0.%20Home”
   - “2. Projects.md” → “https://docs.rms.net.cn/2.%20Projects”
-- If only a single documentation file was modified, both “详情” links must use that file’s URL.
-- If multiple documentation files were modified:
-  - Prefer the file most closely related to the “项目进度更新” section for the first “详情” link.
-  - Prefer the file most closely related to the “文档公告更新” entries for the second “详情” link.
-  - If you cannot determine relevance, sort the file names lexicographically and take the first two in order.
+- For bullets that clearly correspond to a single Markdown file and are not part of a group of adjacent bullets pointing to the same file, you must append a link in full-width parentheses at the end of that bullet, in the form “（详情：https://docs.rms.net.cn/...）”.
+- When, and only when, several adjacent bullets all map to the exact same Markdown file, place those bullets together and add one standalone line right after the group, in the form “（关于以上详情，请见：https://docs.rms.net.cn/...）”, and do not append any “（详情：...）” links to those grouped bullets.
+- If a bullet involves multiple documentation files, choose the most relevant single file for the link. Do not append more than one link to a single bullet.
+- If you cannot safely determine which documentation file a bullet belongs to, you may omit the“（详情：...）”part for that bullet instead of guessing.
 
 [Numbers and Punctuation]
 - All numbers (dates, indices, file numbers, etc.) must be written using ASCII (half-width) digits.
@@ -61,16 +60,17 @@ Based on the provided RMS documentation changes, generate a QQ group announcemen
 
 [Final Checklist]
 Before producing the final result, perform the following checks internally (do not print these items in the output):
-- Have you used the template exactly and only replaced the “****” placeholders?
-- Does the final announcement avoid any Git or development terminology?
-- Are all added symbols limited to the existing “- ” and “---” from the template?
+- Does the announcement follow the high-level structure (title, date, optional project progress, documentation updates, per-bullet detail links when applicable, appreciation sentence, signature)?
+- Have you included a “项目进度更新” section only when there is real project progress, and omitted it entirely otherwise?
+- Are all project and documentation bullets concise and focused, without unnecessary filler words?
+- Does the final announcement avoid any Git or software development terminology?
 - Are all digits half-width ASCII digits?
 - Is all punctuation full-width Chinese punctuation (except inside URLs)?
-- Are both “详情” links correctly generated from the modified documentation file names?
+- Are all “详情” links correctly generated from the modified documentation file names, attached to the appropriate bullets when possible, and when multiple adjacent bullets reference the same file, implemented as a single combined line of the form “（关于以上详情，请见：https://docs.rms.net.cn/...）” placed after the group with no per-bullet links?
 - Is the emotional sentence reproduced exactly, without any changes?
-- If a project owner can be identified, are they included in the “参与玩家” list?
-- Have you avoided adding any explanations, comments, or debug text?
+- If a project owner can be identified, are they included among the project participants?
+- Have you avoided adding any explanations, comments, or debug text outside the announcement itself?
 
-The following context will provide the relevant time, file paths, content snippets, and diffs. Use that information to fill the template and generate the final announcement.
+The following context will provide the relevant time, file paths, content snippets, and diffs. Use that information to build the announcement according to the framework above.
 
 Please output only the final announcement content directly.
