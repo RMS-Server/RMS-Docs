@@ -1,18 +1,18 @@
-请根据提供的 RMS 文档变更信息，生成一篇用于 QQ 群的公告。
+Based on the provided RMS documentation changes, generate a QQ group announcement.
 
-【任务目标】
-- 最终输出必须是一段可直接发送到 QQ 群的公告，语言为简体中文。
-- 只允许输出一次结果，不能包含任何额外解释或调试信息。
+[Task Goal]
+- The final output must be a single announcement that can be sent directly to a QQ group, written in Simplified Chinese.
+- You may output the result only once, with no extra explanations, comments, or debug information.
 
-【时间要求】
-- 上文会提供当前真实世界时间（Beijing, UTC+8）。
-- “更新时间”一行必须使用该时间对应的日期（年、月、日），所有数字使用半角字符。
+[Time Requirements]
+- The context above will provide the current real-world time in Beijing (UTC+8).
+- The “更新时间” line in the template must use the calendar date (year, month, day) corresponding to that Beijing time, with all digits in ASCII (half-width) form.
 
-【输出格式与模板】
-- 必须严格按照下面给出的模板结构输出，只替换其中的“****”占位符，其余字符（包括空格、换行、标点、缩进、- 和 ---）一字不差保留。
-- 模板中行首的“- ”和单独一行的“---”视为模板的一部分，允许输出，但禁止新增任何其他 Markdown / HTML 格式符号（如 **、*、#、[ ]、>、_、~ 等）。
+[Output Format and Template]
+- You must strictly follow the announcement template below. Only replace the “****” placeholders; every other character (including spaces, newlines, punctuation, indentation, “- ”, and “---”) must remain exactly as-is.
+- The leading “- ” at the start of lines and the standalone line “---” are considered part of the template and are allowed. Do not introduce any additional Markdown or HTML formatting symbols (such as **, *, #, [ ], >, _, ~, etc.).
 
-【公告模板（只替换 **** 占位符）】
+[Announcement Template (only replace **** placeholders)]
 【RMS 文档内容更新公告】
 更新时间：****年****月****日
 项目进度更新：
@@ -29,47 +29,48 @@
 —— RMS管理层
 ---
 
-【内容来源与筛选】
-- 仅提取 Markdown 文本中的实质性内容变更：新增段落、描述变更、结构调整等。
-- 必须忽略非内容性改动：空格、缩进、标点细节、文件名或路径调整、元数据更新等。
-- 项目名与玩家名应尽量来自文档内容中明确提到的名称或昵称；如果无法确定，使用概括性描述（例如“公共文档更新”“多人协作项目”等），但不要虚构具体人名。
-- 若从内容中能辨认出项目负责人，必须包含在对应“参与玩家”列表中。
+[Content Source and Filtering]
+- Only extract substantive content changes from the Markdown text: newly added paragraphs, meaningfully revised descriptions, structural adjustments, etc.
+- You must ignore non-content changes: whitespace, indentation, minor punctuation tweaks, file name or path changes, metadata updates, and similar noise.
+- Project names and player names should, whenever possible, come from names or nicknames explicitly mentioned in the documentation content. If you cannot determine them reliably, use general descriptive labels (for example “公共文档更新” or “多人协作项目”) and do not invent specific new names.
+- If you can identify a project owner or lead from the content, that person must be included in the corresponding “参与玩家” list.
 
-【语言与风格】
-- 每一条“进度变化”和“文档公告更新”描述使用简洁中文短句，不超过 20 个汉字。
-- 禁止在最终公告中出现任何 Git 或开发流程相关术语（如 commit、PR、branch、diff、repo、push、merge 等）。
-- 允许保留 Minecraft 相关术语（如 plugin、mod、config、world、spawn、region、build、structure、template、item、block、command、permission、rank、server、worldedit、axiom、multiverse 等）。
-- 情感句“感谢所有参与建设的玩家！服务器的发展离不开每一位的贡献。欢迎更多玩家加入我们的建设项目！”必须一字不改地原样输出。
+[Language and Style]
+- Each “进度变化” and “文档公告更新” entry must be a concise Chinese sentence, no longer than 20 Chinese characters.
+- The final announcement must not contain any Git or software development terms (for example: commit, PR, branch, diff, repo, push, merge, etc.).
+- You may keep Minecraft-related terms (such as plugin, mod, config, world, spawn, region, build, structure, template, item, block, command, permission, rank, server, worldedit, axiom, multiverse, etc.).
+- The emotional sentence “感谢所有参与建设的玩家！服务器的发展离不开每一位的贡献。欢迎更多玩家加入我们的建设项目！” must be output exactly, without any changes.
 
-【链接生成规则】
-- 根据这次变更中涉及的 Markdown 文档文件名，为两个“详情”链接生成真实地址。
-- 链接格式为：
-  https://docs.rms.net.cn/ + 文件名去除“.md”后的部分，并将其中的空格替换为“%20”。
-  例如：
+[Link Generation Rules]
+- For the two “详情” lines, generate real URLs based on the Markdown documentation files touched by this change.
+- The URL format is:
+  https://docs.rms.net.cn/ + the file name with the “.md” suffix removed, and with spaces inside the name replaced by “%20”.
+  For example:
   - “0. Home.md” → “https://docs.rms.net.cn/0.%20Home”
   - “2. Projects.md” → “https://docs.rms.net.cn/2.%20Projects”
-- 如果只修改了一个文档，两个“详情”链接都使用该文档对应的地址。
-- 如果修改了多个文档：
-  - 优先选择与“项目进度更新”最相关的文档作为第一个链接；
-  - 选择与“文档公告更新”条目最相关或最核心的文档作为第二个链接；
-  - 如果无法区分相关性，则按文件名排序，取前两个文档依次填入。
+- If only a single documentation file was modified, both “详情” links must use that file’s URL.
+- If multiple documentation files were modified:
+  - Prefer the file most closely related to the “项目进度更新” section for the first “详情” link.
+  - Prefer the file most closely related to the “文档公告更新” entries for the second “详情” link.
+  - If you cannot determine relevance, sort the file names lexicographically and take the first two in order.
 
-【数字与标点】
-- 日期、序号、文件编号等数字必须全部使用半角字符。
-- 所有标点使用中文全角符号，URL 内部除外。
-- 缩进只能使用半角空格，不能使用 Tab。
+[Numbers and Punctuation]
+- All numbers (dates, indices, file numbers, etc.) must be written using ASCII (half-width) digits.
+- All punctuation must be full-width Chinese punctuation, except inside URLs.
+- Indentation must use ASCII spaces only; do not use Tab characters.
 
-【最终检查】
-在给出最终结果之前，请在内部自检（不要在输出中写出以下内容）：
-- 是否完全使用了上面的模板，只替换了“****”？ 
-- 是否未在公告中出现任何 Git 术语？
-- 是否所有新增符号都属于模板中已有的“- ”或“---”？ 
-- 是否所有数字为半角？ 
-- 是否所有标点为中文全角（URL 除外）？
-- 是否两个“详情”链接都根据修改的文档文件名正确生成？ 
-- 是否情感句一字未改？ 
-- 是否项目负责人（如果能识别）已包含在“参与玩家”中？ 
-- 是否未添加任何说明、注释或调试性文字？
+[Final Checklist]
+Before producing the final result, perform the following checks internally (do not print these items in the output):
+- Have you used the template exactly and only replaced the “****” placeholders?
+- Does the final announcement avoid any Git or development terminology?
+- Are all added symbols limited to the existing “- ” and “---” from the template?
+- Are all digits half-width ASCII digits?
+- Is all punctuation full-width Chinese punctuation (except inside URLs)?
+- Are both “详情” links correctly generated from the modified documentation file names?
+- Is the emotional sentence reproduced exactly, without any changes?
+- If a project owner can be identified, are they included in the “参与玩家” list?
+- Have you avoided adding any explanations, comments, or debug text?
 
-下面将提供本次变更对应的时间、文件路径、内容片段和 diff，请根据这些信息生成最终公告。
+The following context will provide the relevant time, file paths, content snippets, and diffs. Use that information to fill the template and generate the final announcement.
 
+Please output only the final announcement content directly.
