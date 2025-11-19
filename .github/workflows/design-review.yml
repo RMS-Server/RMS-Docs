@@ -1,0 +1,36 @@
+name: Design Diff Announce
+
+on:
+  push:
+    tags:
+      - "notice"
+
+jobs:
+  design-announcement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install markdown-it-py
+
+      - name: Publish design change summaries
+        env:
+          DIFF_BASE: ${{ github.event.before }}
+          OPENAI_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          if [ -n "${DIFF_BASE}" ]; then
+            python scripts/design_diff_announce.py --base "${DIFF_BASE}"
+          else
+            python scripts/design_diff_announce.py
+          fi
