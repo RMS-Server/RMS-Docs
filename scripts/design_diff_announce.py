@@ -93,7 +93,8 @@ def configure_logging(verbose: bool) -> None:
 
 
 def determine_range(base: Optional[str]) -> tuple[Optional[str], Optional[str]]:
-    if base:
+    # GitHub returns all-zero SHA when pushing a new tag; treat it as missing.
+    if base and base != "0" * 40:
         return f"{base}..HEAD", base
     # Fall back to the previous commit when GitHub does not pass `before`.
     try:
