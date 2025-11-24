@@ -96,23 +96,22 @@ def determine_range(base: Optional[str]) -> tuple[Optional[str], Optional[str]]:
     # GitHub returns all-zero SHA when pushing a new tag; treat it as missing.
     if base and base != "0" * 40:
         return f"{base}..HEAD", base
-    # When pushing a new notice-* tag, find the previous one to establish range.
+    # When pushing a notice-*-end tag, find the corresponding notice-*-start.
     try:
         result = subprocess.run(
-            ["git", "tag", "-l", "notice-*", "--sort=-version:refname"],
+            ["git", "tag", "-l", "notice-*-start", "--sort=-version:refname"],
             check=True,
             capture_output=True,
             text=True,
         )
         tags = [t for t in result.stdout.strip().split("\n") if t]
-        # Current tag is HEAD; we want the one before it.
-        if len(tags) >= 2:
-            prev_tag = tags[1]
-            logging.info("Using previous tag %s as base", prev_tag)
-            return f"{prev_tag}..HEAD", prev_tag
+        if tags:
+            start_tag = tags[0]
+            logging.info("Using start tag %s as base", start_tag)
+            return f"{start_tag}..HEAD", start_tag
     except subprocess.CalledProcessError:
         pass
-    # Fall back to the previous commit when no previous notice tag exists.
+    # Fall back to the previous commit when no start tag exists.
     try:
         subprocess.run(
             ["git", "rev-parse", "HEAD~1"],
