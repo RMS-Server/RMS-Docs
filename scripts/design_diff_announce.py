@@ -348,6 +348,63 @@ def summarize_file(
         return "[summary unavailable due to API error]"
 
 
+def summarize_all_files(
+    files_with_chunks: Sequence[tuple[ChangedFile, Sequence[MarkdownChunk]]],
+    dry_run: bool,
+    api_key: str,
+) -> str:
+    beijing_now = datetime.utcnow() + timedelta(hours=8)
+    beijing_str = beijing_now.strftime("%Y-%m-%d %H:%M:%S")
+    # Build combined context with all files and their chunks.
+    file_sections = []
+    for changed, chunks in files_with_chunks:
+        chunk_blobs = []
+        for idx, chunk in enumerate(chunks, 1):
+            chunk_blobs.append(
+                f"  ### Chunk {idx}: {chunk.heading_path} (lines {chunk.start_line}-{chunk.end_line})\n  {chunk.content}\n"
+            )
+        chunks_text = "\n".join(chunk_blobs)
+        file_sections.append(
+            f"## File: {changed.path}\n"
+            f"### Content chunks:\n{chunks_text}\n"
+            f"### Unified diff:\n{changed.diff_text}\n"
+        )
+    combined_context = "\n\n".join(file_sections)
+    user_prompt = (
+        f"{PROMPT_TEMPLATE}\n"
+        f"Current real-world time in Beijing (UTC+8): {beijing_str}.\n"
+        f"You are reviewing changes to {len(files_with_chunks)} markdown file(s) in a single commit.\n"
+        "Below are the changes for all files. Generate ONE unified announcement covering all changes:\n\n"
+        f"{combined_context}\n"
+    )
+    if dry_run:
+        logging.info("Dry run prompt for combined announcement")
+        return "[dry-run] combined summary skipped"
+    payload = {
+        "model": OPENAI_MODEL,
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an RMS announcement assistant. Generate ONE concise announcement in Simplified Chinese covering all file changes.",
+            },
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": 0.2,
+    }
+    request = json.dumps(payload).encode("utf-8")
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    try:
+        response = _http_post(OPENAI_ENDPOINT, request, headers)
+        blob = json.loads(response)
+        return blob["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, json.JSONDecodeError, RuntimeError) as exc:
+        logging.error("OpenAI combined summarize failed: %s", exc)
+        return "[summary unavailable due to API error]"
+
+
 def _http_post(url: str, payload: bytes, headers: dict[str, str]) -> str:
     import urllib.request
     from urllib.error import HTTPError, URLError
@@ -417,24 +474,20 @@ def main() -> int:
     if not changed_files:
         logging.info("No markdown diffs outside .github detected.")
         return 0
-    # Collect summaries for all changed files.
-    summaries = []
+    # Collect all files with their chunks.
+    files_with_chunks = []
     for changed in changed_files:
         chunks = extract_chunks(changed, repo_root, base_commit)
         if not chunks:
             continue
-        summary = summarize_file(changed, chunks, args.dry_run, api_key)
-        summaries.append((changed.path, summary))
-    if not summaries:
+        files_with_chunks.append((changed, chunks))
+    if not files_with_chunks:
         logging.info("No meaningful changes to announce.")
         return 0
-    # Combine all summaries into a single announcement.
-    combined = []
-    for path, summary in summaries:
-        combined.append(f"**{path.name}**\n{summary}")
-    final_message = "\n\n".join(combined)
-    send_to_qq(final_message, Path("combined"), args.dry_run)
-    logging.info("Processed %d markdown files in single announcement.", len(summaries))
+    # Generate single combined announcement for all files.
+    announcement = summarize_all_files(files_with_chunks, args.dry_run, api_key)
+    send_to_qq(announcement, Path("combined"), args.dry_run)
+    logging.info("Processed %d markdown files in single announcement.", len(files_with_chunks))
     return 0
 
 
