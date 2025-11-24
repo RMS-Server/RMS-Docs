@@ -3,7 +3,7 @@ name: Design Diff Announce
 on:
   push:
     tags:
-      - "notice-*-end"
+      - "notice-*"
 
 jobs:
   design-announcement:

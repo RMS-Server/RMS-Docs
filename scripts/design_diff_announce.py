@@ -96,22 +96,41 @@ def determine_range(base: Optional[str]) -> tuple[Optional[str], Optional[str]]:
     # GitHub returns all-zero SHA when pushing a new tag; treat it as missing.
     if base and base != "0" * 40:
         return f"{base}..HEAD", base
-    # When pushing a notice-*-end tag, find the corresponding notice-*-start.
+    # Check if current HEAD has a notice-*-end tag.
     try:
         result = subprocess.run(
-            ["git", "tag", "-l", "notice-*-start", "--sort=-version:refname"],
+            ["git", "tag", "--points-at", "HEAD"],
             check=True,
             capture_output=True,
             text=True,
         )
-        tags = [t for t in result.stdout.strip().split("\n") if t]
-        if tags:
-            start_tag = tags[0]
-            logging.info("Using start tag %s as base", start_tag)
-            return f"{start_tag}..HEAD", start_tag
+        current_tags = [t for t in result.stdout.strip().split("\n") if t.startswith("notice-")]
+        end_tags = [t for t in current_tags if t.endswith("-end")]
+        # Filter out notice-*-start tags (they don't trigger analysis).
+        single_tags = [t for t in current_tags if not t.endswith("-end") and not t.endswith("-start")]
+        if end_tags:
+            # Range mode: find corresponding notice-*-start tag.
+            try:
+                result = subprocess.run(
+                    ["git", "tag", "-l", "notice-*-start", "--sort=-version:refname"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                start_tags = [t for t in result.stdout.strip().split("\n") if t]
+                if start_tags:
+                    start_tag = start_tags[0]
+                    logging.info("Range mode: using %s..%s", start_tag, end_tags[0])
+                    return f"{start_tag}..HEAD", start_tag
+            except subprocess.CalledProcessError:
+                pass
+        elif single_tags:
+            # Single commit mode: analyze only this commit.
+            logging.info("Single commit mode for tag %s", single_tags[0])
+            return "HEAD~1..HEAD", "HEAD~1"
     except subprocess.CalledProcessError:
         pass
-    # Fall back to the previous commit when no start tag exists.
+    # Fall back to the previous commit when no tag info available.
     try:
         subprocess.run(
             ["git", "rev-parse", "HEAD~1"],
@@ -374,6 +393,20 @@ def send_to_qq(message: str, path: Path, dry_run: bool) -> None:
 def main() -> int:
     args = build_parser().parse_args()
     configure_logging(args.verbose)
+    # Skip processing if triggered by a notice-*-start tag.
+    try:
+        result = subprocess.run(
+            ["git", "tag", "--points-at", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        tags = [t for t in result.stdout.strip().split("\n") if t]
+        if any(t.endswith("-start") for t in tags):
+            logging.info("Skipping: notice-*-start tags don't trigger analysis")
+            return 0
+    except subprocess.CalledProcessError:
+        pass
     api_key = args.key or os.getenv("OPENAI_API_KEY")
     if not api_key:
         logging.error("API key is missing; use --key or set OPENAI_API_KEY")
