@@ -417,15 +417,24 @@ def main() -> int:
     if not changed_files:
         logging.info("No markdown diffs outside .github detected.")
         return 0
-    processed = 0
+    # Collect summaries for all changed files.
+    summaries = []
     for changed in changed_files:
         chunks = extract_chunks(changed, repo_root, base_commit)
         if not chunks:
             continue
         summary = summarize_file(changed, chunks, args.dry_run, api_key)
-        send_to_qq(summary, changed.path, args.dry_run)
-        processed += 1
-    logging.info("Processed %d markdown files.", processed)
+        summaries.append((changed.path, summary))
+    if not summaries:
+        logging.info("No meaningful changes to announce.")
+        return 0
+    # Combine all summaries into a single announcement.
+    combined = []
+    for path, summary in summaries:
+        combined.append(f"**{path.name}**\n{summary}")
+    final_message = "\n\n".join(combined)
+    send_to_qq(final_message, Path("combined"), args.dry_run)
+    logging.info("Processed %d markdown files in single announcement.", len(summaries))
     return 0
 
 
