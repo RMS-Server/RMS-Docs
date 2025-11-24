@@ -12,7 +12,6 @@
 
 1. 登录 [RMS SSO 用户中心](https://sso.rms.net.cn/users)。
 2. 点击 `修改用户名`，并输入你的新游戏ID。
-3. 访问 [RMS白名单系统](https://wl.rms.net.cn)，使用SSO登录后，检查你的新ID是否已成功同步到白名单中。
 
 ## 管理你的SSO账户
 
