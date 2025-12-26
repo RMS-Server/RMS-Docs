@@ -7,10 +7,10 @@
 | ID              | 称呼  | 职责                                 |
 | --------------- | ----- | ------------------------------------ |
 | `Trirrin(XRain666)`| XR    | 腐竹、服务器维护、网站维护            |
-| `Chonghua`        | 重华  | 绝大多数日常事务 行政？              |
+| `Chonghua`        | 重华  | 绝大多数日常事务 行政？审核、          |
 | `__VY__`        | VY    | 维护文档 技术 写点插件               |
-| `tytyi_`         | tytyi_ | 主后勤                           |
-| `CoralcalX`     | CX    | 游离状态？ 建筑服                    |
+| `tytyi_`         | ty |  协助工程管理、人员管理                        |
+| `CoralcalX`     | CX    | 运维                    |
 | `Hurrybili1016` | Hurry | 文档中工程信息的一部分更新、网页维护     |
 | `Jog_Ming`      | Jim   | 被压榨写模组(IB微死)                 |
 | `Petris`        | 派蒙  | 技术                                 |
@@ -21,21 +21,38 @@
 括号中的昵称可能是曾用/熟人可能会用的称呼，请尽可能使用友善的称呼。
 
 如果有误请联系管理进行更改
-| ID                | 昵称                    | 曾用ID       | 其它账号                                            |
+| ID                | 昵称                    | 曾用ID         | 其它账号                                             |
 | ----------------- | ----------------------- | ------------ | --------------------------------------------------- |
-| `Trirrin`        | 叉Rain 叉R              |   XRain666   | GitHub:[XRain66](https://github.com/XRain66)        |
-| `Chonghua`        | 重华                    |              | GitHub: [Chonghua05](https://github.com/Chonghua05) |
-| `__VY__`          | VY                      | Logic_VY     | GitHub: [VY-L](https://github.com/VY-L)             |
-| `tytyi_`         | TY (汤圆汤圆i)        |              |                 |
-| `CoralcatX`       | CX (珊瑚猫 傻花猫)      |              |                                                     |
-| `Hurrybili1016`   | Hurry 哈瑞              |              | GitHub:[mgHurryo](https://github.com/mgHurryo)      |
-| `Jog_Ming`        | Jim Jog Jog_Ming (积木) |              | GitHub:[Jog-Ming](https://github.com/Jog-Ming)      |
-| `Petris5256`      | 派蒙 Petris             |              |                                                     |
-| `AWHSDWJ`         | 爱玩红石的玩家           |              |                                                     |
-| `tdr_mo`          | tdr (太丢人)            |              |                                                     |
-| `tang511`         | 糖                      |              |                                                     |
-| `DarkChocolate_0` | 黑巧 (slept)            | LoadLibraryA |                                                     |
-| `Noxci`           | 小诺                    |              |                                                     |
+| `Trirrin`         | 叉Rain 叉R              |   XRain666     | GitHub:[XRain66](https://github.com/XRain66)        |
+| `Chonghua`        | 重华                    |                | GitHub: [Chonghua05](https://github.com/Chonghua05) |
+| `__VY__`          | VY                     | Logic_VY       | GitHub: [VY-L](https://github.com/VY-L)             |
+| `tytyi_`          | TY (汤圆汤圆i)          |                |                                                     |
+| `CoralcatX`       | CX (珊瑚猫 傻花猫)       |                |                                                     |
+| `Hurrybili1016`   | Hurry 哈瑞              |                | GitHub:[mgHurryo](https://github.com/mgHurryo)      |
+| `Jog_Ming`        | Jim Jog Jog_Ming (积木) |                | GitHub:[Jog-Ming](https://github.com/Jog-Ming)      |
+| `Petris5256`      | 派蒙 Petris             |                |                                                     |
+| `PtAr01`          | 伯亚、ptar              |                |                                                     |
+| `AWHSDWJ`         | 爱玩红石的玩家            |                |                                                     |
+| `tdr_mo`          | tdr (太丢人)             |                |                                                     |
+| `tang511`         | 糖                      |                |                                                     |
+| `DarkChocolate_0` | 黑巧 (slept)            | LoadLibraryA   |                                                     |
+| `Noxci`           | 小诺                    |                |                                                     |
+| `Fessor_Cat`      | 四叶草                  |                |                                                     |
+| `Yrillingshear`   | ymc、橘猫               |                |                                                     |
+| `ZCL_Husbvt`      | zcl、husbvt             |                |                                                     |
+| `WSFBN`           | zcl、husbvt             |                |                                                     |
+| `late_maple`      | 晚枫                    |                |                                                     |
+| `LuoTianyi66CCFF` | ccff                    |                |                                                     |
+| `id31232`         | 31232                   | 31212          |                                                     |
+| `SM_Galaxy`       | xiyun                   |                |                                                     |
+| `K2536`           | kevin                   |                |                                                     |
+| `Aurora_Y`        | 果冻                    | guodong1314520 |                                                     |
+| `KFC50`           | KFC                    |                |                                                     |
+| `Art_wths`        | 无头活塞                 |                |                                                     |
+| `Na_Mo_da`        | 雨夏、那莫大             |                |                                                     |
+| `Chenjunfu2a`     | 小陈                    |                |                                                     |
+
+
 
 
 
