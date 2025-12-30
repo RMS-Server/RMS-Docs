@@ -16,7 +16,7 @@
 
 我们的白名单与RMS统一登录系统(SSO)绑定，一个步骤即可完成。
 
-1. **访问 [RMS SSO System](https://sso.rms.net.cn/user)**。
+1. **访问 [RMS SSO System](https://sso.rms.net.cn/users)**。
 2.  点击**注册账户**
     > [!WARNING]
     > **用户名务必填写你的游戏ID** (正版ID)。
