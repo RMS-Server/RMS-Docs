@@ -40,7 +40,7 @@
 | `Fessor_Cat`      | 四叶草                  |                |                                                     |
 | `Yrillingshear`   | ymc、橘猫               |                |                                                     |
 | `ZCL_Husbvt`      | zcl、husbvt             |                |                                                     |
-| `WSFBN`           | zcl、husbvt             |                |                                                     |
+| `WSFBN`           |                 |                |                                                     |
 | `late_maple`      | 晚枫                    |                |                                                     |
 | `LuoTianyi66CCFF` | ccff                    |                |                                                     |
 | `id31232`         | 31232                   | 31212          |                                                     |
