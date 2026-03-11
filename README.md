@@ -1,4 +1,4 @@
-# RMS-Announcement / RMS-Docs
+# CXU-Docs
 现在Readme.md不会被后端索引
 
 > [!CAUTION]
