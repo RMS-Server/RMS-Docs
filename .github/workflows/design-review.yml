@@ -28,6 +28,8 @@ jobs:
         env:
           DIFF_BASE: ${{ github.event.before }}
           OPENAI_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          QQ_ENDPOINT: ${{ secrets.QQ_ENDPOINT }}
+          QQ_GROUP_ID: ${{ secrets.QQ_GROUP_ID }}
         run: |
           if [ -n "${DIFF_BASE}" ]; then
             python scripts/design_diff_announce.py --base "${DIFF_BASE}"

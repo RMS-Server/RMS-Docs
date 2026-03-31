@@ -21,8 +21,6 @@ from markdown_it import MarkdownIt
 # Hard-coded interface so the workflow stays deterministic.
 OPENAI_ENDPOINT = "https://api.deepseek.com/v1/chat/completions"
 OPENAI_MODEL = "deepseek-chat"
-QQ_ENDPOINT = "http://119.23.57.80:53000/_send_group_notice"
-QQ_GROUP_ID = 457054386
 QQ_MAX_RETRIES = 5
 PROMPT_TEMPLATE_PATH = Path(__file__).with_name("design_announce_prompt.txt")
 
@@ -419,18 +417,18 @@ def _http_post(url: str, payload: bytes, headers: dict[str, str]) -> str:
         raise RuntimeError(f"HTTP request failed: {exc}") from exc
 
 
-def send_to_qq(message: str, path: Path, dry_run: bool) -> None:
+def send_to_qq(message: str, path: Path, dry_run: bool, qq_endpoint: str, qq_group_id: int) -> None:
     if dry_run:
         logging.info("Dry run QQ dispatch for %s:\n%s", path, message)
         return
-    payload = json.dumps({"group_id": QQ_GROUP_ID, "content": message}).encode("utf-8")
+    payload = json.dumps({"group_id": qq_group_id, "content": message}).encode("utf-8")
     headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer rmstoken",
     }
     for attempt in range(1, QQ_MAX_RETRIES + 1):
         try:
-            _http_post(QQ_ENDPOINT, payload, headers)
+            _http_post(qq_endpoint, payload, headers)
             logging.info("QQ announcement sent for %s on attempt %d", path, attempt)
             return
         except RuntimeError as exc:
@@ -468,6 +466,19 @@ def main() -> int:
     if not api_key:
         logging.error("API key is missing; use --key or set OPENAI_API_KEY")
         return 1
+    qq_endpoint = os.getenv("QQ_ENDPOINT")
+    if not qq_endpoint:
+        logging.error("QQ endpoint is missing; set QQ_ENDPOINT environment variable")
+        return 1
+    qq_group_id_str = os.getenv("QQ_GROUP_ID")
+    if not qq_group_id_str:
+        logging.error("QQ group ID is missing; set QQ_GROUP_ID environment variable")
+        return 1
+    try:
+        qq_group_id = int(qq_group_id_str)
+    except ValueError:
+        logging.error("QQ_GROUP_ID must be an integer, got: %s", qq_group_id_str)
+        return 1
     range_spec, base_commit = determine_range(args.base)
     repo_root = get_repo_root()
     changed_files = gather_changed_files(range_spec)
@@ -486,7 +497,7 @@ def main() -> int:
         return 0
     # Generate single combined announcement for all files.
     announcement = summarize_all_files(files_with_chunks, args.dry_run, api_key)
-    send_to_qq(announcement, Path("combined"), args.dry_run)
+    send_to_qq(announcement, Path("combined"), args.dry_run, qq_endpoint, qq_group_id)
     logging.info("Processed %d markdown files in single announcement.", len(files_with_chunks))
     return 0
 
