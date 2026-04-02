@@ -30,16 +30,16 @@
 > [!INFO]
 > 正版玩家可跳过该步骤
 
-1. 打开你的MC启动器
+1. 打开你的MC启动器  
 ![PCL2启动器主页](/Assets/ExLg_01.webp)
 ![HMCL启动器主页](/Assets/ExLg-01.webp)
-2. 找到外置登录选项
+2. 找到外置登录选项  
 ![PCL2启动器外置登录选项页面1](/Assets/ExLg_02.webp)
 ![HMCL启动器外置登录选项页面1](/Assets/ExLg-02.webp)
-3. 外置登录服务器地址填写 `https://sso.rms.net.cn/api/mc/auth`
+3. 外置登录服务器地址填写 `https://sso.rms.net.cn/api/mc/auth`  
 ![PCL2启动器外置登录选项页面2](/Assets/ExLg_03.webp)
 ![HMCL启动器外置登录选项页面2](/Assets/ExLg-03.webp)
-4. 使用你的CXU SSO用户名和密码登录
+4. 使用你的CXU SSO用户名和密码登录  
 ![PCL2启动器外置登录页面](/Assets/ExLg_04.webp)
 ![HMCL启动器外置登录页面](/Assets/ExLg-04.webp)
 
